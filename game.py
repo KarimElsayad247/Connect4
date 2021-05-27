@@ -5,8 +5,8 @@ import pygame_gui
 
 APPLICATION_TITLE = 'Connect4'
 
-WINDOW_WIDTH = 900
-WINDOW_HEIGHT = 800
+WINDOW_WIDTH = 1290
+WINDOW_HEIGHT = 900
 
 GAME_AREA_WIDTH = 700
 GAME_AREA_HEIGHT = 600
@@ -14,21 +14,24 @@ GAME_HORIZONTAL_TILE_COUNT = 7
 GAME_VERTICA_TILE_COUNT = 6
 BOARD_START_X = 30
 BOARD_START_Y = 30
-CIRCLE_MARGIN = 10
 
 # 7 horizontal tiles means width (700/7) = 100px for each tile
 # thus radius of each is at max 100/2 = 50px
 MAIN_RADIUS = (GAME_AREA_WIDTH / GAME_HORIZONTAL_TILE_COUNT)/2
+THICKNESS = 10
+CIRCLE_MARGIN = THICKNESS + 30
 
 # Colors
 YELLOW = (250, 200, 3)
 RED = (205, 28, 47)
 BLUE = (29, 99, 245)
+DARK_BLUE = (22, 86, 138)
+DARK_TURQUOISE = (3, 54, 73)
 GREY = (208, 208, 208)
 BLACK = (0,0,0)
 WHITE = (255, 255, 255)
 
-BACKGROUND_COLOR = BLUE
+BACKGROUND_COLOR = DARK_TURQUOISE
 
 
 class Circle:
@@ -48,6 +51,9 @@ board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN)*i,
                          BOARD_START_Y + 50 + (100 + CIRCLE_MARGIN)*j, MAIN_RADIUS, GREY)
                  for i in range(GAME_HORIZONTAL_TILE_COUNT)]
                  for j in range(GAME_VERTICA_TILE_COUNT)]
+
+# larger circles around the base circles that will give the illusion of edges
+circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) for circle in row ] for row in board_circles]
 
 # must initialize pygame as program start
 # this is just something to be done
@@ -98,6 +104,12 @@ while running:
     window.fill(BACKGROUND_COLOR)
 
     # Drawing game objects
+
+    # draw the edges firs, because we want the circles to cover them
+    for row in circle_edges:
+        for edge in row:
+            edge.draw()
+
     for row in board_circles:
         for circle in row:
             circle.draw()
