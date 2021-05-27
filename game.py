@@ -24,6 +24,7 @@ GAME_AREA_WIDTH = (MAIN_RADIUS*2 + CIRCLE_MARGIN) * GAME_HORIZONTAL_TILE_COUNT
 GAME_AREA_HEIGHT = (MAIN_RADIUS*2 + CIRCLE_MARGIN) * GAME_VERTICA_TILE_COUNT
 
 COLUMN_WIDTH = GAME_AREA_WIDTH / GAME_HORIZONTAL_TILE_COUNT
+COLUMN_HEIGHT = COLUMN_WIDTH
 
 print(GAME_AREA_WIDTH)
 print(GAME_AREA_HEIGHT)
@@ -41,6 +42,7 @@ WHITE = (255, 255, 255)
 
 BACKGROUND_COLOR = DARK_TURQUOISE
 
+PLAYER_COLORS = [RED, YELLOW]
 
 class Circle:
 
@@ -52,11 +54,6 @@ class Circle:
 
     def draw(self):
         pygame.draw.circle(window, self.color, (self.x, self.y), self.r)
-
-
-def processClick(x):
-    print(f'clicked column {(x - BOARD_START_X/2) // COLUMN_WIDTH}')
-
 
 # create a 2d matrix of circles for the game board
 board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN)*i,
@@ -71,7 +68,19 @@ circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) 
 board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
 
 # variable that controls color of each inserted
-current_player = 1
+current_player = 0
+
+
+def processClick(x, y, player):
+    i = int((y - BOARD_START_Y/2 ) // COLUMN_HEIGHT)
+    j = int((x - BOARD_START_X/2) // COLUMN_WIDTH)
+    print(f'clicked row {i}')
+    print(f'clicked column {j}')
+
+    board_state[i][j] = player
+    board_circles[i][j].color = PLAYER_COLORS[player]
+
+
 
 # must initialize pygame as program start
 # this is just something to be done
@@ -119,7 +128,8 @@ while running:
             # Check If the position of mouse click is within border of Tile Area
             # No need to do any swapping otherwise
             if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
-                processClick(event.pos[0])
+                processClick(event.pos[0], event.pos[1], current_player)
+                current_player = not current_player
 
         manager.process_events(event)
 
