@@ -1,4 +1,6 @@
-# Connect 4
-## Purpose:
-This is a project created for the Artificial Intillegence course.
-It aims to demostrate the Minimax adversarial search algorithm, with and witohut alpha-beta pruning.
+<h1>Connect 4</h1>
+
+<h2>Purpose:</h2>
+
+<p>This is a project created for the Artificial Intillegence course.</p>
+<p>It aims to demostrate the Minimax adversarial search algorithm, with and witohut alpha-beta pruning.</p>
