@@ -5,21 +5,29 @@ import pygame_gui
 
 APPLICATION_TITLE = 'Connect4'
 
-WINDOW_WIDTH = 1290
+WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 900
 
-GAME_AREA_WIDTH = 700
-GAME_AREA_HEIGHT = 600
+
 GAME_HORIZONTAL_TILE_COUNT = 7
 GAME_VERTICA_TILE_COUNT = 6
 BOARD_START_X = 30
-BOARD_START_Y = 30
+BOARD_START_Y = 60
 
 # 7 horizontal tiles means width (700/7) = 100px for each tile
 # thus radius of each is at max 100/2 = 50px
-MAIN_RADIUS = (GAME_AREA_WIDTH / GAME_HORIZONTAL_TILE_COUNT)/2
+MAIN_RADIUS = 50
 THICKNESS = 10
 CIRCLE_MARGIN = THICKNESS + 30
+
+GAME_AREA_WIDTH = (MAIN_RADIUS*2 + CIRCLE_MARGIN) * GAME_HORIZONTAL_TILE_COUNT
+GAME_AREA_HEIGHT = (MAIN_RADIUS*2 + CIRCLE_MARGIN) * GAME_VERTICA_TILE_COUNT
+
+COLUMN_WIDTH = GAME_AREA_WIDTH / GAME_HORIZONTAL_TILE_COUNT
+
+print(GAME_AREA_WIDTH)
+print(GAME_AREA_HEIGHT)
+print(COLUMN_WIDTH)
 
 # Colors
 YELLOW = (250, 200, 3)
@@ -46,6 +54,10 @@ class Circle:
         pygame.draw.circle(window, self.color, (self.x, self.y), self.r)
 
 
+def processClick(x):
+    print(f'clicked column {(x - BOARD_START_X/2) // COLUMN_WIDTH}')
+
+
 # create a 2d matrix of circles for the game board
 board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN)*i,
                          BOARD_START_Y + 50 + (100 + CIRCLE_MARGIN)*j, MAIN_RADIUS, GREY)
@@ -54,6 +66,12 @@ board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN)*i,
 
 # larger circles around the base circles that will give the illusion of edges
 circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) for circle in row ] for row in board_circles]
+
+# for now, I'll use a 2d list to represent the board logically
+board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
+
+# variable that controls color of each inserted
+current_player = 1
 
 # must initialize pygame as program start
 # this is just something to be done
@@ -94,6 +112,14 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             running = False
+
+        # Checking for a mouseclick on a tile
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = event.pos
+            # Check If the position of mouse click is within border of Tile Area
+            # No need to do any swapping otherwise
+            if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
+                processClick(event.pos[0])
 
         manager.process_events(event)
 
