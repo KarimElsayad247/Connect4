@@ -55,6 +55,7 @@ class Circle:
     def draw(self):
         pygame.draw.circle(window, self.color, (self.x, self.y), self.r)
 
+
 # create a 2d matrix of circles for the game board
 board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN)*i,
                          BOARD_START_Y + 50 + (100 + CIRCLE_MARGIN)*j, MAIN_RADIUS, GREY)

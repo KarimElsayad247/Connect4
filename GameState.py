@@ -16,16 +16,16 @@ class GameState:
         self.move = move
 
     def makeMove(self, move):
-        current_cell = move * 6
+        startOfColumn = move * 6
         newGrid = copy.copy(self.grid)
         # check if valid move (available slot)
-        if self.grid[move * 6 + 5] != '0':
+        if self.grid[startOfColumn + 5] != '0':
             print("Invalid Move")
             return
         # get the current available cell
-        while newGrid[current_cell] != '0' and current_cell < (move * 6) + 7:
-            current_cell += 1
-        newGrid = newGrid[:current_cell] + str(self.player) + newGrid[current_cell + 1:]
+        while newGrid[startOfColumn] != '0' and startOfColumn < (move * 6) + 7:
+            startOfColumn += 1
+        newGrid = newGrid[:startOfColumn] + str(self.player) + newGrid[startOfColumn + 1:]
         # check if it's player 1 or player 2 move
         player = 1 if self.player == 2 else 2
         return GameState(newGrid, player, move)
