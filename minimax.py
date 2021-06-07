@@ -85,12 +85,14 @@ def decisionMinimax(state: GameState, k):  # returns an integer between 0:7
 def maximizeAlphaBeta(state: GameState, alpha, beta, k):
     # just like normal maximize, but when looping over children, alpha is set to max
     # and checks if alpha >= beta, breaks if true
+    # updates alpha
     pass
 
 
 def minimizeAlphaBeta(state: GameState, alpha, beta, k):
     # just like normal minimize, but when looping over children, beta is set to min
     # and checks if beta <= alpha, breaks if true
+    # updates min
     pass
 
 
