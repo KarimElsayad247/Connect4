@@ -226,6 +226,64 @@ class GameState:
                 score -= FOUR_IN_A_ROW
         return score
 
+    def eval(self):
+        score = 0
+        current_grid = self.grid
+        number_of_connected = 0
+        FOUR_CONNECTED = 100
+        THREE_CONNECTED = 50
+        TWO_CONNECTED = 20
+        PLAYER_ONE = 1
+        PLAYER_TWO = -1
+        # Check Vertical Alignments
+        for i in range(0, 6):
+            cell_index = i * 6
+            current_cell = current_grid[cell_index]
+            while current_grid[cell_index] != '0':
+                cell_index += 1
+                if current_grid[cell_index] == current_cell:
+                    number_of_connected += 1
+                else:
+                    number_of_connected = 0
+                    current_cell = current_grid[cell_index]
+            if current_grid[cell_index - 1] == '1':
+                factor = PLAYER_ONE
+            else:
+                factor = PLAYER_TWO
+
+            if number_of_connected >= 4:
+                score += factor * (number_of_connected - 4 - 1) * FOUR_CONNECTED
+            elif number_of_connected == 3:
+                score += factor * THREE_CONNECTED
+            elif number_of_connected == 2:
+                score += factor * TWO_CONNECTED
+
+        # Check Horizontal Alignments
+        for i in range(0, 6):
+            cell_index = i
+            current_cell = current_grid[cell_index]
+            while current_grid[cell_index] != '0':
+                cell_index += 6
+                if current_grid[cell_index] == current_cell:
+                    number_of_connected += 1
+                else:
+                    number_of_connected = 0
+                    current_cell = current_grid[cell_index]
+
+            if current_grid[cell_index - 1] == '1':
+                factor = PLAYER_ONE
+            else:
+                factor = PLAYER_TWO
+
+            if number_of_connected >= 4:
+                score += factor * (number_of_connected - 4 - 1) * FOUR_CONNECTED
+            elif number_of_connected == 3:
+                score += factor * THREE_CONNECTED
+            elif number_of_connected == 2:
+                score += factor * TWO_CONNECTED
+
+        return
+
     def isTerminal(self):
         """
         returns boolean that indicates if the board is completely filled or not
