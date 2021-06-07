@@ -1,6 +1,8 @@
 # Algorithms go here
 import GameState
 import math
+import random
+from time import sleep
 
 NUM_COLUMNS = 7
 
@@ -100,3 +102,9 @@ def decisionAlphaBeta(state: GameState, k):
     # calls maximize(state, -inf, inf, k)
     # returns child returned from maximize
     pass
+
+
+# temp function to test ai in GUI
+def dumbDecision(state: GameState, k):
+    sleep(0.5)
+    return random.randint(0,NUM_COLUMNS - 1)
