@@ -233,10 +233,10 @@ class GameState:
         FOUR_CONNECTED = 100
         THREE_CONNECTED = 50
         TWO_CONNECTED = 20
-        PLAYER_ONE = 1
-        PLAYER_TWO = -1
+        PLAYER_ONE = -1
+        PLAYER_TWO = 1
         # Check Vertical Alignments
-        for i in range(0, 6):
+        for i in range(0, 7):
             cell_index = i * 6
             current_cell = current_grid[cell_index]
             while current_grid[cell_index] != '0':
@@ -250,16 +250,16 @@ class GameState:
                 factor = PLAYER_ONE
             else:
                 factor = PLAYER_TWO
-
+            # TODO : Return score if 4 connected
             if number_of_connected >= 4:
                 score += factor * (number_of_connected - 4 - 1) * FOUR_CONNECTED
-            elif number_of_connected == 3:
+            elif number_of_connected == 3 and (cell_index) < (i*6) + 5:
                 score += factor * THREE_CONNECTED
-            elif number_of_connected == 2:
+            elif number_of_connected == 2 and (cell_index) < (i*6) + 4:
                 score += factor * TWO_CONNECTED
 
         # Check Horizontal Alignments
-        for i in range(0, 6):
+        for i in range(0, 7):
             cell_index = i
             current_cell = current_grid[cell_index]
             while current_grid[cell_index] != '0':
