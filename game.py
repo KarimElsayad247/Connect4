@@ -8,7 +8,6 @@ APPLICATION_TITLE = 'Connect4'
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 900
 
-
 GAME_HORIZONTAL_TILE_COUNT = 7
 GAME_VERTICA_TILE_COUNT = 6
 BOARD_START_X = 30
@@ -20,8 +19,8 @@ MAIN_RADIUS = 50
 THICKNESS = 10
 CIRCLE_MARGIN = THICKNESS + 30
 
-GAME_AREA_WIDTH = (MAIN_RADIUS*2 + CIRCLE_MARGIN) * GAME_HORIZONTAL_TILE_COUNT
-GAME_AREA_HEIGHT = (MAIN_RADIUS*2 + CIRCLE_MARGIN) * GAME_VERTICA_TILE_COUNT
+GAME_AREA_WIDTH = (MAIN_RADIUS * 2 + CIRCLE_MARGIN) * GAME_HORIZONTAL_TILE_COUNT
+GAME_AREA_HEIGHT = (MAIN_RADIUS * 2 + CIRCLE_MARGIN) * GAME_VERTICA_TILE_COUNT
 
 COLUMN_WIDTH = GAME_AREA_WIDTH / GAME_HORIZONTAL_TILE_COUNT
 COLUMN_HEIGHT = COLUMN_WIDTH
@@ -37,12 +36,13 @@ BLUE = (29, 99, 245)
 DARK_BLUE = (22, 86, 138)
 DARK_TURQUOISE = (3, 54, 73)
 GREY = (208, 208, 208)
-BLACK = (0,0,0)
+BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 BACKGROUND_COLOR = DARK_TURQUOISE
 
 PLAYER_COLORS = [RED, YELLOW]
+
 
 class Circle:
 
@@ -57,13 +57,14 @@ class Circle:
 
 
 # create a 2d matrix of circles for the game board
-board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN)*i,
-                         BOARD_START_Y + 50 + (100 + CIRCLE_MARGIN)*j, MAIN_RADIUS, GREY)
-                 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
+board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN) * i,
+                         BOARD_START_Y + 50 + (100 + CIRCLE_MARGIN) * j, MAIN_RADIUS, GREY)
+                  for i in range(GAME_HORIZONTAL_TILE_COUNT)]
                  for j in range(GAME_VERTICA_TILE_COUNT)]
 
 # larger circles around the base circles that will give the illusion of edges
-circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) for circle in row ] for row in board_circles]
+circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) for circle in row] for row in
+                board_circles]
 
 # for now, I'll use a 2d list to represent the board logically
 board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
@@ -73,14 +74,18 @@ current_player = 0
 
 
 def processClick(x, y, player):
-    i = int((y - BOARD_START_Y/2 ) // COLUMN_HEIGHT)
-    j = int((x - BOARD_START_X/2) // COLUMN_WIDTH)
+    i = int((y - BOARD_START_Y / 2) // COLUMN_HEIGHT)
+    j = int((x - BOARD_START_X / 2) // COLUMN_WIDTH)
     print(f'clicked row {i}')
     print(f'clicked column {j}')
 
     board_state[i][j] = player
     board_circles[i][j].color = PLAYER_COLORS[player]
 
+
+def gameOver():
+    # when board is filled, displays which player won and prompts user to close game or play again
+    pass
 
 
 # must initialize pygame as program start
@@ -105,7 +110,7 @@ running = True
 while running:
 
     time_delta = clock.tick(60) / 1000  # This variable is for gui manager
-    time_counter += time_delta * 1000   # This variable is for animation and other timed events
+    time_counter += time_delta * 1000  # This variable is for animation and other timed events
 
     # This comment is copies from the previous project in case anyone forgot why some stuff are important
     # a game loop consists of 2 main phases: update phase, and draw phase

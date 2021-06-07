@@ -1,5 +1,8 @@
 import copy
 
+AI_PLAYER = 1
+HUMAN_PLAYER = 2
+
 
 class GameState:
     """ GameState class
@@ -10,6 +13,7 @@ class GameState:
         2 for player two slot
         move : move that caused the current state
     """
+
     def __init__(self, grid, player, move):
         self.grid = grid
         self.player = player
@@ -36,7 +40,31 @@ class GameState:
             children.append(self.makeMove(i))
         return children
 
-    def heuristic(self):
+    def evalState(self, player):
         # TODO: write an admissible heuristic function
+        # Idea:
+        # A weighted linear function, including features:
+        # A 2 in a row = 2 (horizontally, veritcally, or diagonally)
+        # A 3 in a row = 3 ``
+        # A 4 in a row = >> 4 ``
+        # Pieces are better placed in the center columns and lower rows so:
+        # A piece in the center column = 2
+        # A piece on the left or right of the center column = 1
+        # A piece on the lowest row = 3
+        # A piece on the second lowest row = 2
+        # A piece on the third lowest row = 1
+        # Numbers are arbitrary and subject to change
+        # For maximizing player (the AI) the numbers are added (wins with highest number)
+        # For minimizing player (human) the numbers are subtracted (wins with lowest number)
         return
 
+    def isTerminal(self):
+        """
+        returns boolean that indicates if the board is completely filled or not
+        """
+        pass
+
+    def isWinning(self, player):
+        """
+        returns a boolean to indicate if state is winning for current player or not
+        """
