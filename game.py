@@ -2,6 +2,8 @@
 
 import pygame
 import pygame_gui
+import minimax
+import GameState
 
 APPLICATION_TITLE = 'Connect4'
 
@@ -43,6 +45,8 @@ WHITE = (255, 255, 255)
 
 BACKGROUND_COLOR = DARK_TURQUOISE
 
+HUMAN = 0
+AI = 1
 PLAYER_COLORS = [RED, YELLOW]
 
 
@@ -76,15 +80,24 @@ board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAM
 column_heights = [GAME_VERTICA_TILE_COUNT - 1 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
 
 # variable that controls color of each inserted
-current_player = 0
+current_player = HUMAN
 
 
-def processClick(x, y, player):
+def humanPlay(x, y, player):
     i = int((y - BOARD_START_Y / 2) // COLUMN_HEIGHT)
     j = int((x - BOARD_START_X / 2) // COLUMN_WIDTH)
     print(f'clicked row {i}')
     print(f'clicked column {j}')
     performMove(j, player)
+
+
+# Converts current board state into appropriate format for minimax
+def aiPlay():
+    # for now function will use dummy decision function
+    state = None
+    k = 3
+    decision = minimax.dumbDecision(state, k)
+    return decision
 
 
 # Function that actually inserts a chip into a column
@@ -147,16 +160,23 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        # ai will move only on its turn.
+        if current_player == AI:
+            action = aiPlay()
+            performMove(action, current_player)
+            current_player = HUMAN
+
         # Checking for a mouseclick on a tile
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
             if not gameOver():
-                # Check If the position of mouse click is within border of Tile Area
-                # No need to do any swapping otherwise
-                print(f'clicked {event.pos[0]}, {event.pos[1]}')
-                if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
-                    processClick(event.pos[0], event.pos[1], current_player)
-                    current_player = not current_player
+                if current_player == HUMAN:
+                    # Check If the position of mouse click is within border of Tile Area
+                    # No need to do any swapping otherwise
+                    print(f'clicked {event.pos[0]}, {event.pos[1]}')
+                    if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
+                        humanPlay(event.pos[0], event.pos[1], current_player)
+                        current_player = AI
             else:
                 print(f'Game Over! press restart when available')
 
