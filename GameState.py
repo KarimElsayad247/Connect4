@@ -72,43 +72,44 @@ class GameState:
         currGrid = self.grid
         positiveDiagonalIndices = [0, 1, 2, 6, 7, 8, 12, 13, 14, 18, 19, 20]
         negativeDiagonalIndices = [3, 4, 5, 9, 10, 11, 15, 16, 17, 21, 22, 23]
+        positiveDiagonalFor3 = copy.copy(positiveDiagonalIndices)
+        positiveDiagonalFor3.extend([9, 15, 21, 25, 26, 27])
+        negativeDiagonalFor3 = copy.copy(negativeDiagonalIndices)
+        negativeDiagonalFor3.extend([8, 14, 20, 26, 27, 28])
+        positiveDiagonalFor2 = copy.copy(positiveDiagonalFor3)
+        positiveDiagonalFor2.extend([16, 22, 28, 32, 33, 34])
+        negativeDiagonalFor2 = copy.copy(negativeDiagonalFor3)
+        negativeDiagonalFor2.extend([13, 19, 25, 31, 32, 33])
+
         # 2 in a row:
         # 1. HORIZONTALLY:
         for i in range(36):
             if currGrid[i] == AI_PLAYER and currGrid[i + 6] == AI_PLAYER:
                 score += 2
-                print("2 in a row horizontally for AI")
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 6] == HUMAN_PLAYER:
                 score -= 2
-                print("2 in a row horizontally for human")
         # 2. Vertically
         for j in range(0, 36, 6):
             for i in range(4):
                 if currGrid[i + j] == AI_PLAYER and currGrid[i + j + 1] == AI_PLAYER:
                     score += 2
-                    print("2 in a row vertically for AI", i, j)
                 elif currGrid[i + j] == HUMAN_PLAYER and currGrid[i + 1 + j] == HUMAN_PLAYER:
                     score -= 2
-                    print("2 in a row vertically for human", i, j)
         # 3. Positively sloped diagonals:
         # (don't consider the cases where the diagonal length is less than 4 as it is meaningless)
-        for i in positiveDiagonalIndices:
-            # print(i, i + 7, currGrid[i], currGrid[i + 7])
+
+        for i in positiveDiagonalFor2:
             if currGrid[i] == AI_PLAYER and currGrid[i + 7] == AI_PLAYER:
                 score += 2
-                print("2 in a row positively sloped for AI")
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 7] == HUMAN_PLAYER:
                 score -= 2
-                print("2 in a row positively sloped for human")
         # 4. Negatively sloped diagonals:
-        for i in negativeDiagonalIndices:
-            print(i, i + 5, currGrid[i], currGrid[i + 5])
+
+        for i in negativeDiagonalFor2:
             if currGrid[i] == AI_PLAYER and currGrid[i + 5] == AI_PLAYER:
                 score += 2
-                print("2 in a row negatively sloped for AI")
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 5] == HUMAN_PLAYER:
                 score -= 2
-                print("2 in a row negatively sloped for human")
 
         # 3 in a row
         # 1. HORIZONTALLY:
@@ -127,14 +128,15 @@ class GameState:
                     score -= 3
         # 3. Positively sloped diagonals:
         # (don't consider the cases where the diagonal length is less than 4 as it is meaningless)
-        for i in positiveDiagonalIndices:
+
+        for i in positiveDiagonalFor3:
             if currGrid[i] == AI_PLAYER and currGrid[i + 7] == AI_PLAYER and currGrid[i + 14] == AI_PLAYER:
                 score += 3
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 7] == HUMAN_PLAYER \
                     and currGrid[i + 14] == HUMAN_PLAYER:
                 score -= 3
         # 4. Negatively sloped diagonals:
-        for i in negativeDiagonalIndices:
+        for i in negativeDiagonalFor3:
             if currGrid[i] == AI_PLAYER and currGrid[i + 5] == AI_PLAYER and currGrid[i + 10] == AI_PLAYER:
                 score += 3
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 5] == HUMAN_PLAYER \
@@ -202,43 +204,55 @@ def printGrid(grid):
     print()
 
 
-newGrid = "0" * 42
-gameState = GameState(newGrid, random.choice(PLAYERS), None)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
-gameState = gameState.makeMove(5)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
-gameState = gameState.makeMove(5)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
-gameState = gameState.makeMove(4)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
-gameState = gameState.makeMove(5)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
-gameState = gameState.makeMove(4)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
-gameState = gameState.makeMove(5)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
-gameState = gameState.makeMove(1)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
-gameState = gameState.makeMove(2)
-printGrid(gameState.grid)
-print(gameState.evalState())
-
+# newGrid = "0" * 42
+# gameState = GameState(newGrid, random.choice(PLAYERS), None)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
+# gameState = gameState.makeMove(5)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
+# gameState = gameState.makeMove(5)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
+# gameState = gameState.makeMove(4)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
+# gameState = gameState.makeMove(5)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
+# gameState = gameState.makeMove(4)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
+# gameState = gameState.makeMove(5)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
 # gameState = gameState.makeMove(1)
 # printGrid(gameState.grid)
 # print(gameState.evalState())
+#
+# gameState = gameState.makeMove(2)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
+# gameState = gameState.makeMove(2)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+#
+# gameState = gameState.makeMove(0)
+# printGrid(gameState.grid)
+# print(gameState.evalState())
+# print(gameState.grid)
+
+grid = "200000100000210000000000110000122200000000"
+gameState = GameState(grid, random.choice(PLAYERS), None)
+printGrid(gameState.grid)
+print(gameState.evalState())
+
+
