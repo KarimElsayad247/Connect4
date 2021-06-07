@@ -1,8 +1,8 @@
 import copy
 import random
 
-AI_PLAYER = '1'
-HUMAN_PLAYER = '2'
+AI_PLAYER = '2'
+HUMAN_PLAYER = '1'
 PLAYERS = [AI_PLAYER, HUMAN_PLAYER]
 TWO_IN_A_ROW = 4
 THREE_IN_A_ROW = 12
