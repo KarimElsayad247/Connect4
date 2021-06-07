@@ -40,6 +40,13 @@ class GameState:
             children.append(self.makeMove(i))
         return children
 
+    # returns whither a move is valid for the purpose of creating a valid actions list
+    def isValidMove(self, move):
+        if self.grid[move * 6 + 5] == '0':
+            return True
+        else:
+            return False
+
     def evalState(self, player):
         # TODO: write an admissible heuristic function
         # Idea:
