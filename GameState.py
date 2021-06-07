@@ -252,9 +252,6 @@ class GameState:
         print()
 
 
-
-
-
 # newGrid = "0" * 42
 # gameState = GameState(newGrid, random.choice(PLAYERS), None)
 # printGrid(gameState.grid)
