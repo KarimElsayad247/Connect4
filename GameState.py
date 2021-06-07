@@ -184,10 +184,11 @@ class GameState:
         """
         returns boolean that indicates if the board is completely filled or not
         """
-        for char in self.grid:
-            if char == '0':
+        for i in range(NUM_COLUMNS):
+            if self.isValidMove(i):
                 return False
-        return True
+            else:
+                return True
 
     def isWinning(self, player):
         """
