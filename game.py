@@ -71,6 +71,10 @@ circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) 
 # for now, I'll use a 2d list to represent the board logically
 board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
 
+# height array that keeps the height of each column
+# useful for quickly inserting into column
+column_heights = [GAME_VERTICA_TILE_COUNT - 1 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
+
 # variable that controls color of each inserted
 current_player = 0
 
@@ -80,14 +84,27 @@ def processClick(x, y, player):
     j = int((x - BOARD_START_X / 2) // COLUMN_WIDTH)
     print(f'clicked row {i}')
     print(f'clicked column {j}')
+    performMove(j, player)
 
-    board_state[i][j] = player
-    board_circles[i][j].color = PLAYER_COLORS[player]
+
+# Function that actually inserts a chip into a column
+def performMove(j, player):
+    if column_heights[j] >= 0:
+        board_state[column_heights[j]][j] = player
+        board_circles[column_heights[j]][j].color = PLAYER_COLORS[player]
+        column_heights[j] -= 1
+    else:
+        print("can't insert here")
+        # TODO: ERROR BOX
 
 
 def gameOver():
     # when board is filled, displays which player won and prompts user to close game or play again
-    pass
+    # if the height list contains a number larger than -1 there are still moves possible
+    for h in column_heights:
+        if h > -1:
+            return False
+    return True
 
 
 # must initialize pygame as program start
@@ -133,12 +150,15 @@ while running:
         # Checking for a mouseclick on a tile
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
-            # Check If the position of mouse click is within border of Tile Area
-            # No need to do any swapping otherwise
-            print(f'clicked {event.pos[0]}, {event.pos[1]}')
-            if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
-                processClick(event.pos[0], event.pos[1], current_player)
-                current_player = not current_player
+            if not gameOver():
+                # Check If the position of mouse click is within border of Tile Area
+                # No need to do any swapping otherwise
+                print(f'clicked {event.pos[0]}, {event.pos[1]}')
+                if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
+                    processClick(event.pos[0], event.pos[1], current_player)
+                    current_player = not current_player
+            else:
+                print(f'Game Over! press restart when available')
 
         manager.process_events(event)
 
