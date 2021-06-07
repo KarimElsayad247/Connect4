@@ -5,25 +5,27 @@ import pygame_gui
 
 APPLICATION_TITLE = 'Connect4'
 
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 900
+WINDOW_WIDTH = 1100
+WINDOW_HEIGHT = 700
 
 GAME_HORIZONTAL_TILE_COUNT = 7
 GAME_VERTICA_TILE_COUNT = 6
-BOARD_START_X = 30
-BOARD_START_Y = 60
+BOARD_START_X = 10
+BOARD_START_Y = 10
 
 # 7 horizontal tiles means width (700/7) = 100px for each tile
 # thus radius of each is at max 100/2 = 50px
 MAIN_RADIUS = 50
-THICKNESS = 10
-CIRCLE_MARGIN = THICKNESS + 30
+THICKNESS = 5
+CIRCLE_MARGIN = THICKNESS + 10
 
-GAME_AREA_WIDTH = (MAIN_RADIUS * 2 + CIRCLE_MARGIN) * GAME_HORIZONTAL_TILE_COUNT
-GAME_AREA_HEIGHT = (MAIN_RADIUS * 2 + CIRCLE_MARGIN) * GAME_VERTICA_TILE_COUNT
 
-COLUMN_WIDTH = GAME_AREA_WIDTH / GAME_HORIZONTAL_TILE_COUNT
-COLUMN_HEIGHT = COLUMN_WIDTH
+COLUMN_WIDTH = MAIN_RADIUS * 2 + CIRCLE_MARGIN
+COLUMN_HEIGHT = MAIN_RADIUS * 2 + CIRCLE_MARGIN
+
+GAME_AREA_WIDTH = COLUMN_WIDTH * GAME_HORIZONTAL_TILE_COUNT
+GAME_AREA_HEIGHT = COLUMN_HEIGHT * GAME_VERTICA_TILE_COUNT
+
 
 print(GAME_AREA_WIDTH)
 print(GAME_AREA_HEIGHT)
@@ -133,6 +135,7 @@ while running:
             x, y = event.pos
             # Check If the position of mouse click is within border of Tile Area
             # No need to do any swapping otherwise
+            print(f'clicked {event.pos[0]}, {event.pos[1]}')
             if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
                 processClick(event.pos[0], event.pos[1], current_player)
                 current_player = not current_player
