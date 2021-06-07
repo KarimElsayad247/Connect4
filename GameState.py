@@ -5,6 +5,7 @@ AI_PLAYER = '1'
 HUMAN_PLAYER = '2'
 PLAYERS = [AI_PLAYER, HUMAN_PLAYER]
 
+NUM_COLUMNS = 7
 
 class GameState:
     """ GameState class
@@ -42,6 +43,13 @@ class GameState:
         for i in range(0, 7):
             children.append(self.makeMove(i))
         return children
+
+    # returns whither a move is valid for the purpose of creating a valid actions list
+    def isValidMove(self, move):
+        if self.grid[move * 6 + 5] == '0':
+            return True
+        else:
+            return False
 
     def evalState(self):
         # TODO: write an admissible heuristic function
