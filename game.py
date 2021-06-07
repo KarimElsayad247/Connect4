@@ -45,9 +45,9 @@ WHITE = (255, 255, 255)
 
 BACKGROUND_COLOR = DARK_TURQUOISE
 
-HUMAN = 0
-AI = 1
-PLAYER_COLORS = [RED, YELLOW]
+HUMAN = 1
+AI = 2
+PLAYER_COLORS = [GREY, RED, YELLOW]
 
 
 class Circle:
@@ -75,6 +75,8 @@ circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) 
 # for now, I'll use a 2d list to represent the board logically
 board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
 
+print(board_state)
+
 # height array that keeps the height of each column
 # useful for quickly inserting into column
 column_heights = [GAME_VERTICA_TILE_COUNT - 1 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
@@ -91,10 +93,20 @@ def humanPlay(x, y, player):
     performMove(j, player)
 
 
+def buildStateString(board):
+    stringList = []
+    for column in range(GAME_HORIZONTAL_TILE_COUNT):
+        for row in range(GAME_VERTICA_TILE_COUNT - 1, -1, -1):
+            stringList.append(board[row][column])
+    return ''.join(str(stringList))
+
+
 # Converts current board state into appropriate format for minimax
 def aiPlay():
     # for now function will use dummy decision function
-    state = None
+    stateString = buildStateString(board_state)
+    state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
+    print(stateString)
     k = 3
     decision = minimax.dumbDecision(state, k)
     return decision
