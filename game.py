@@ -106,7 +106,6 @@ def aiPlay():
     # for now function will use dummy decision function
     stateString = buildStateString(board_state)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
-    print(stateString)
     k = 3
     decision = minimax.dumbDecision(state, k)
     return decision
@@ -121,6 +120,8 @@ def performMove(j, player):
     else:
         print("can't insert here")
         # TODO: ERROR BOX
+
+    print(buildStateString(board_state))
 
 
 def gameOver():
