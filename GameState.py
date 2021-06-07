@@ -56,12 +56,11 @@ class GameState:
             return False
 
     def evalState(self):
-        # TODO: write an admissible heuristic function
         # Idea:
         # A weighted linear function, including features:
-        # A 2 in a row = 2 (horizontally, vertically, or diagonally)
-        # A 3 in a row = 3 ``
-        # A 4 in a row = >> 4 ``
+        # A 2 in a row = 4 (horizontally, vertically, or diagonally)
+        # A 3 in a row = 12 ``
+        # A 4 in a row = >> 100 ``
         # Pieces are better placed in the center columns and lower rows so:
         # A piece in the center column = 2
         # A piece on the left or right of the center column = 1
