@@ -3,6 +3,7 @@ import copy
 AI_PLAYER = 1
 HUMAN_PLAYER = 2
 
+NUM_COLUMNS = 7
 
 class GameState:
     """ GameState class
@@ -69,7 +70,11 @@ class GameState:
         """
         returns boolean that indicates if the board is completely filled or not
         """
-        pass
+        for i in range(NUM_COLUMNS):
+            if self.isValidMove(i):
+                return False
+            else:
+                return True
 
     def isWinning(self, player):
         """
