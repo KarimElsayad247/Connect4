@@ -4,8 +4,12 @@ import random
 AI_PLAYER = '1'
 HUMAN_PLAYER = '2'
 PLAYERS = [AI_PLAYER, HUMAN_PLAYER]
+TWO_IN_A_ROW = 4
+THREE_IN_A_ROW = 12
+FOUR_IN_A_ROW = 100
 
 NUM_COLUMNS = 7
+
 
 class GameState:
     """ GameState class
@@ -85,98 +89,135 @@ class GameState:
         # 1. HORIZONTALLY:
         for i in range(36):
             if currGrid[i] == AI_PLAYER and currGrid[i + 6] == AI_PLAYER:
-                score += 2
+                score += TWO_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 6] == HUMAN_PLAYER:
-                score -= 2
+                score -= TWO_IN_A_ROW
         # 2. Vertically
         for j in range(0, 36, 6):
             for i in range(4):
                 if currGrid[i + j] == AI_PLAYER and currGrid[i + j + 1] == AI_PLAYER:
-                    score += 2
+                    score += TWO_IN_A_ROW
                 elif currGrid[i + j] == HUMAN_PLAYER and currGrid[i + 1 + j] == HUMAN_PLAYER:
-                    score -= 2
+                    score -= TWO_IN_A_ROW
         # 3. Positively sloped diagonals:
         # (don't consider the cases where the diagonal length is less than 4 as it is meaningless)
 
         for i in positiveDiagonalFor2:
             if currGrid[i] == AI_PLAYER and currGrid[i + 7] == AI_PLAYER:
-                score += 2
+                score += TWO_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 7] == HUMAN_PLAYER:
-                score -= 2
+                score -= TWO_IN_A_ROW
         # 4. Negatively sloped diagonals:
 
         for i in negativeDiagonalFor2:
             if currGrid[i] == AI_PLAYER and currGrid[i + 5] == AI_PLAYER:
-                score += 2
+                score += TWO_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 5] == HUMAN_PLAYER:
-                score -= 2
+                score -= TWO_IN_A_ROW
 
         # 3 in a row
         # 1. HORIZONTALLY:
         for i in range(29):
             if currGrid[i] == AI_PLAYER and currGrid[i + 6] == AI_PLAYER and currGrid[i + 12] == AI_PLAYER:
-                score += 3
+                score += THREE_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 6] == HUMAN_PLAYER and currGrid[i + 12] == HUMAN_PLAYER:
                 score -= 3
         # 2. Vertically
         for j in range(0, 36, 6):
             for i in range(4):
-                if currGrid[i + j] == AI_PLAYER and currGrid[i + j + 1] == AI_PLAYER and currGrid[i + j + 2] == AI_PLAYER:
-                    score += 3
+                if currGrid[i + j] == AI_PLAYER and currGrid[i + j + 1] == AI_PLAYER and currGrid[
+                    i + j + 2] == AI_PLAYER:
+                    score += THREE_IN_A_ROW
                 elif currGrid[i + j] == HUMAN_PLAYER and currGrid[i + j + 1] == HUMAN_PLAYER \
                         and currGrid[i + j + 2] == HUMAN_PLAYER:
-                    score -= 3
+                    score -= THREE_IN_A_ROW
         # 3. Positively sloped diagonals:
         # (don't consider the cases where the diagonal length is less than 4 as it is meaningless)
 
         for i in positiveDiagonalFor3:
             if currGrid[i] == AI_PLAYER and currGrid[i + 7] == AI_PLAYER and currGrid[i + 14] == AI_PLAYER:
-                score += 3
+                score += THREE_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 7] == HUMAN_PLAYER \
                     and currGrid[i + 14] == HUMAN_PLAYER:
-                score -= 3
+                score -= THREE_IN_A_ROW
         # 4. Negatively sloped diagonals:
         for i in negativeDiagonalFor3:
             if currGrid[i] == AI_PLAYER and currGrid[i + 5] == AI_PLAYER and currGrid[i + 10] == AI_PLAYER:
-                score += 3
+                score += THREE_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 5] == HUMAN_PLAYER \
                     and currGrid[i + 10] == HUMAN_PLAYER:
-                score -= 3
+                score -= THREE_IN_A_ROW
         # 4 in a row
         # 1. HORIZONTALLY:
         for i in range(23):
             if currGrid[i] == AI_PLAYER and currGrid[i + 6] == AI_PLAYER and currGrid[i + 12] == AI_PLAYER \
                     and currGrid[i + 18] == AI_PLAYER:
-                score += 100
+                score += FOUR_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 6] == HUMAN_PLAYER and currGrid[i + 12] == HUMAN_PLAYER \
                     and currGrid[i + 18] == HUMAN_PLAYER:
-                score -= 100
+                score -= FOUR_IN_A_ROW
         # 2. Vertically
         for j in range(0, 36, 6):
             for i in range(4):
-                if currGrid[i + j] == AI_PLAYER and currGrid[i + j + 1] == AI_PLAYER and currGrid[i + j + 2] == AI_PLAYER \
+                if currGrid[i + j] == AI_PLAYER and currGrid[i + j + 1] == AI_PLAYER and currGrid[
+                    i + j + 2] == AI_PLAYER \
                         and currGrid[i + j + 3] == AI_PLAYER:
-                    score += 100
+                    score += FOUR_IN_A_ROW
                 elif currGrid[i + j] == HUMAN_PLAYER and currGrid[i + j + 1] == HUMAN_PLAYER \
                         and currGrid[i + j + 2] == HUMAN_PLAYER and currGrid[i + j + 3] == HUMAN_PLAYER:
-                    score -= 100
+                    score -= FOUR_IN_A_ROW
         # 3. Positively sloped diagonals:
         # (don't consider the cases where the diagonal length is less than 4 as it is meaningless)
         for i in positiveDiagonalIndices:
             if currGrid[i] == AI_PLAYER and currGrid[i + 7] == AI_PLAYER and currGrid[i + 14] == AI_PLAYER \
                     and currGrid[i + 21] == AI_PLAYER:
-                score += 100
+                score += FOUR_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 7] == HUMAN_PLAYER \
                     and currGrid[i + 14] == HUMAN_PLAYER and currGrid[i + 21] == HUMAN_PLAYER:
-                score -= 100
+                score -= FOUR_IN_A_ROW
         # 4. Negatively sloped diagonals:
         for i in negativeDiagonalIndices:
             if currGrid[i] == AI_PLAYER and currGrid[i + 5] == AI_PLAYER and currGrid[i + 10] == AI_PLAYER \
                     and currGrid[i + 15] == AI_PLAYER:
-                score += 100
+                score += FOUR_IN_A_ROW
             elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 5] == HUMAN_PLAYER \
                     and currGrid[i + 10] == HUMAN_PLAYER and currGrid[i + 15] == HUMAN_PLAYER:
-                score -= 100
+                score -= FOUR_IN_A_ROW
+        # A piece on the center left or right
+        for i in range(12, 18):
+            if currGrid[i] == AI_PLAYER:
+                score += 2
+            elif currGrid[i] == HUMAN_PLAYER:
+                score -= 2
+        for i in range(30, 36):
+            if currGrid[i] == AI_PLAYER:
+                score += 2
+            elif currGrid[i] == HUMAN_PLAYER:
+                score -= 2
+        # A piece in the center column
+        for i in range(24, 30):
+            if currGrid[i] == AI_PLAYER:
+                score += 3
+            elif currGrid[i] == HUMAN_PLAYER:
+                score -= 3
+        # A piece in the lowest row
+        for i in range(0, 37, 6):
+            if currGrid[i] == AI_PLAYER:
+                score += 3
+            elif currGrid[i] == HUMAN_PLAYER:
+                score -= 3
+        # A piece in the second lowest row
+        for i in range(1, 38, 6):
+            if currGrid[i] == AI_PLAYER:
+                score += 2
+            elif currGrid[i] == HUMAN_PLAYER:
+                score -= 2
+        # A piece in the third lowest row
+        for i in range(2, 39, 6):
+            if currGrid[i] == AI_PLAYER:
+                score += 1
+            elif currGrid[i] == HUMAN_PLAYER:
+                score -= 1
 
         return score
 
@@ -254,5 +295,3 @@ grid = "200000100000210000000000110000122200000000"
 gameState = GameState(grid, random.choice(PLAYERS), None)
 printGrid(gameState.grid)
 print(gameState.evalState())
-
-
