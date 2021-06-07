@@ -1,4 +1,5 @@
 # Algorithms go here
+import GameState
 
 def actions():
     """
@@ -7,11 +8,17 @@ def actions():
     pass
 
 
+def terminal_state(state: GameState, k):
+    pass
+
+
 # Regular minimax algorithms
-def maximizeMinimax(state, k):
+def maximizeMinimax(state: GameState, k):
     # Steps:
     # 1. Check if this is a terminal state, and if so return its evaluation
     #    A terminal state constitutes either the k depth = 0 was reached or the game is over (board is complete)
+    
+
     # 2. If not, set (maxChild, maxUtility) = (null, -inf)
     # 3. Then loop over all the state children, which are derived from all possible moves
     #    and set utility to minimize(child, k-1)
@@ -19,7 +26,7 @@ def maximizeMinimax(state, k):
     pass
 
 
-def minimizeMinimax(state, k):
+def minimizeMinimax(state: GameState, k):
     # Steps
     # 1. Check if terminal, and if so return evaluation
     # 2. Else set (minChild, minUtility) = (null, inf)
@@ -28,26 +35,26 @@ def minimizeMinimax(state, k):
     pass
 
 
-def decisionMinimax(state, k):
+def decisionMinimax(state: GameState, k):
     # The AI player is the
     # call maximize(state, k) and set child to it, then return it
     pass
 
 
 # Minimax with alpha-beta pruning algorithms
-def maximizeAlphaBeta(state, alpha, beta, k):
+def maximizeAlphaBeta(state: GameState, alpha, beta, k):
     # just like normal maximize, but when looping over children, alpha is set to max
     # and checks if alpha >= beta, breaks if true
     pass
 
 
-def minimizeAlphaBeta(state, alpha, beta, k):
+def minimizeAlphaBeta(state: GameState, alpha, beta, k):
     # just like normal minimize, but when looping over children, beta is set to min
     # and checks if beta <= alpha, breaks if true
     pass
 
 
-def decisionAlphaBeta(state, k):
+def decisionAlphaBeta(state: GameState, k):
     # calls maximize(state, -inf, inf, k)
     # returns child returned from maximize
     pass
