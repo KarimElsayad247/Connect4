@@ -56,7 +56,6 @@ def maximizeMinimax(state: GameState, k):
     return maxChild, maxUtility
 
 
-
 def minimizeMinimax(state: GameState, k):
     # Steps
     # 1. Check if terminal, and if so return evaluation

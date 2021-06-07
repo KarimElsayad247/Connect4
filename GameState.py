@@ -244,13 +244,15 @@ class GameState:
                 if current_grid[cell_index] == current_cell:
                     number_of_connected += 1
                 else:
+                    if number_of_connected == 4:
+                        factor = PLAYER_ONE if current_cell == '1' else PLAYER_TWO
+                        score += factor * (number_of_connected - 4 - 1) * FOUR_CONNECTED
                     number_of_connected = 0
                     current_cell = current_grid[cell_index]
             if current_grid[cell_index - 1] == '1':
                 factor = PLAYER_ONE
             else:
                 factor = PLAYER_TWO
-            # TODO : Return score if 4 connected
             if number_of_connected >= 4:
                 score += factor * (number_of_connected - 4 - 1) * FOUR_CONNECTED
             elif number_of_connected == 3 and (cell_index) < (i*6) + 5:
