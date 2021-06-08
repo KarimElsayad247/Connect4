@@ -1,5 +1,6 @@
 import copy
 import random
+import timeit
 
 AI_PLAYER = '2'
 HUMAN_PLAYER = '1'
@@ -258,9 +259,9 @@ class GameState:
 
             if number_of_connected >= 4:
                 score += factor * (number_of_connected - 3) * FOUR_CONNECTED
-            elif number_of_connected == 3 and cell_index <= (i * 6) + 5:
+            elif number_of_connected == 3 and j < (i * 6) + 6:
                 score += factor * THREE_CONNECTED
-            elif number_of_connected == 2 and cell_index <= (i * 6) + 4:
+            elif number_of_connected == 2 and j < (i * 6) + 5:
                 score += factor * TWO_CONNECTED
 
         # Check Horizontal Alignments
@@ -483,7 +484,7 @@ def checkRedundancyNegative(state, Number, i, j, cell, start, limit):
 # print(gameState.evalState())
 # print(gameState.grid)
 
-grid = "111200110000211000222200000000000000222000"
+grid = "112220110000211000222220000000000000222000"
 gameState = GameState(grid, random.choice(PLAYERS), None)
 gameState.printGrid()
 print(gameState.eval())
