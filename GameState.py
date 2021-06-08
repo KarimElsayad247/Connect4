@@ -313,7 +313,7 @@ class GameState:
                 j += 7
 
         negativeDiagonalIndicesStarts = [36, 37, 38, 30, 24, 18]
-        negativeDiagonalIndicesEnd = [35, 29, 23, 41, 40, 39]
+        negativeDiagonalIndicesEnd = [11, 17, 23, 5, 4, 3]
         # Check Negative Diagonal Alignments
         for i in range(0, 6):
             number_of_connected = 0
