@@ -239,52 +239,60 @@ class GameState:
         for i in range(0, 7):
             cell_index = i * 6
             current_cell = current_grid[cell_index]
-            while current_grid[cell_index] != '0':
-                cell_index += 1
+            while current_grid[cell_index] != '0' and cell_index <= (i * 6) + 5:
                 if current_grid[cell_index] == current_cell:
                     number_of_connected += 1
                 else:
                     if number_of_connected == 4:
-                        factor = PLAYER_ONE if current_cell == '1' else PLAYER_TWO
-                        score += factor * (number_of_connected - 4 - 1) * FOUR_CONNECTED
-                    number_of_connected = 0
+                        factor = PLAYER_ONE if current_grid[cell_index - 1] == '1' else PLAYER_TWO
+                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                    number_of_connected = 1
                     current_cell = current_grid[cell_index]
+                cell_index += 1
+
             if current_grid[cell_index - 1] == '1':
                 factor = PLAYER_ONE
             else:
                 factor = PLAYER_TWO
-            if number_of_connected >= 4:
-                score += factor * (number_of_connected - 4 - 1) * FOUR_CONNECTED
-            elif number_of_connected == 3 and (cell_index) < (i*6) + 5:
-                score += factor * THREE_CONNECTED
-            elif number_of_connected == 2 and (cell_index) < (i*6) + 4:
-                score += factor * TWO_CONNECTED
 
+            if number_of_connected >= 4:
+                score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+            elif number_of_connected == 3 and cell_index <= (i * 6) + 5:
+                score += factor * THREE_CONNECTED
+            elif number_of_connected == 2 and cell_index <= (i * 6) + 4:
+                score += factor * TWO_CONNECTED
+            number_of_connected = 0
+
+        number_of_connected = 0
         # Check Horizontal Alignments
         for i in range(0, 7):
             cell_index = i
             current_cell = current_grid[cell_index]
-            while current_grid[cell_index] != '0':
-                cell_index += 6
+            while cell_index <= i + 36:
                 if current_grid[cell_index] == current_cell:
                     number_of_connected += 1
                 else:
-                    number_of_connected = 0
+                    if number_of_connected == 4:
+                        factor = PLAYER_ONE if current_grid[cell_index - 6] == '1' else PLAYER_TWO
+                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                    number_of_connected = 1
                     current_cell = current_grid[cell_index]
+                cell_index += 6
 
-            if current_grid[cell_index - 1] == '1':
+            if current_grid[cell_index - 6] == '1':
                 factor = PLAYER_ONE
             else:
                 factor = PLAYER_TWO
 
             if number_of_connected >= 4:
-                score += factor * (number_of_connected - 4 - 1) * FOUR_CONNECTED
-            elif number_of_connected == 3:
+                score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+            elif number_of_connected == 3 and cell_index <= (i * 6) + 5:
                 score += factor * THREE_CONNECTED
-            elif number_of_connected == 2:
+            elif number_of_connected == 2 and cell_index <= (i * 6) + 4:
                 score += factor * TWO_CONNECTED
+            number_of_connected = 0
 
-        return
+        return score
 
     def isTerminal(self):
         """
@@ -358,7 +366,7 @@ class GameState:
 # print(gameState.evalState())
 # print(gameState.grid)
 
-grid = "200000100000210000000000110000122200000000"
+grid = "111120000000210000000000000000000000222000"
 gameState = GameState(grid, random.choice(PLAYERS), None)
 gameState.printGrid()
-print(gameState.evalState())
+print(gameState.eval())
