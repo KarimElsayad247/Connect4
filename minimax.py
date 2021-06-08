@@ -5,6 +5,8 @@ import random
 from time import sleep
 
 NUM_COLUMNS = 7
+
+
 def actions(state: GameState):
     """
     Returns set of all possible actions available on the board.
@@ -94,16 +96,17 @@ def maximizeAlphaBeta(state: GameState, alpha, beta, k):
     maxChild, maxUtility = (None, -math.inf)
 
     for action in actions(state):
-        _, utility = minimizeAlphaBeta(state, alpha, beta, k-1)
+        _, utility = minimizeAlphaBeta(state.makeMove(action), alpha, beta, k-1)
         if utility > maxUtility:
             maxChild ,maxUtility = action, utility
-    #update value of alpha
+        # update value of alpha
         if utility > alpha:
             alpha = utility
-    #check if the value of beta is lower than alpha then prune the rest of the tree
+        # check if the value of beta is lower than alpha then prune the rest of the tree
         if beta <= alpha:
             break
     return maxChild, maxUtility
+
 
 def minimizeAlphaBeta(state: GameState, alpha, beta, k):
     # just like normal minimize, but when looping over children, beta is set to min
@@ -114,17 +117,16 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k):
     minChild, minUtility = (None, +math.inf)
 
     for action in actions(state):
-        _, utility = maximizeAlphaBeta(state, alpha, beta, k-1)
+        _, utility = maximizeAlphaBeta(state.makeMove(action), alpha, beta, k-1)
         if utility < minUtility:
             minChild, minUtility = action, utility
-    #update the value of beta
+        # update the value of beta
         if utility < beta:
             beta = utility
-    # check if the value of beta is lower than alpha then prune the rest of the tree
+        # check if the value of beta is lower than alpha then prune the rest of the tree
         if beta <= alpha:
             break
     return minChild, minUtility
-
 
 
 def decisionAlphaBeta(state: GameState, alpha, beta, k):
