@@ -311,6 +311,34 @@ class GameState:
                     number_of_connected = 1
                     current_cell = current_grid[j]
                 j += 7
+
+        negativeDiagonalIndicesStarts = [36, 37, 38, 30, 24, 18]
+        negativeDiagonalIndicesEnd = [35, 29, 23, 41, 40, 39]
+        # Check Negative Diagonal Alignments
+        for i in range(0, 6):
+            number_of_connected = 0
+            start = negativeDiagonalIndicesStarts[i]
+            limit = negativeDiagonalIndicesEnd[i]
+            cell_index = start
+            current_cell = current_grid[cell_index]
+            j = start
+            while j >= limit:
+                if current_grid[j] == current_cell and current_grid[j] != '0':
+                    number_of_connected += 1
+                else:
+                    factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
+                    if 1 < number_of_connected < 4:
+                        if checkRedundancyNegative(current_grid, number_of_connected,
+                                                   i, j, current_grid[j], start, limit):
+                            if number_of_connected == 3:
+                                score += factor * THREE_CONNECTED
+                            elif number_of_connected == 2:
+                                score += factor * TWO_CONNECTED
+                    elif number_of_connected >= 4:
+                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                    number_of_connected = 1
+                    current_cell = current_grid[j]
+                j -= 5
         return score
 
     def isTerminal(self):
@@ -383,6 +411,30 @@ def checkRedundancyPositive(state, Number, i, j, cell, start, limit):
         check_left_one = left_one >= start and state[left_one] != undesired_cell
         check_right_one = right_one <= limit and state[right_one] != undesired_cell
         return check_left_one or check_right_one
+
+
+def checkRedundancyNegative(state, Number, i, j, cell, start, limit):
+    undesired_cell = '1' if cell == '2' else '2'
+    if Number == 2:
+        left_one = j
+        left_two = j - 5
+        right_one = j + 15
+        right_two = j + 20
+        check_left_one = left_one >= limit and state[left_one] != undesired_cell
+        check_left_two = left_two >= limit and state[left_two] != undesired_cell
+        check_right_one = right_one <= start and state[right_one] != undesired_cell
+        check_right_two = right_two <= start and state[right_two] != undesired_cell
+        return (check_left_one and check_left_two) or \
+               (check_left_two and check_right_one) or \
+               (check_right_two and check_right_one)
+        pass
+    elif Number == 3:
+        left_one = j
+        right_one = j + 20
+        check_left_one = left_one >= limit and state[left_one] != undesired_cell
+        check_right_one = right_one <= start and state[right_one] != undesired_cell
+        return check_left_one or check_right_one
+
 # newGrid = "0" * 42
 # gameState = GameState(newGrid, random.choice(PLAYERS), None)
 # printGrid(gameState.grid)
