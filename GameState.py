@@ -230,7 +230,7 @@ class GameState:
         score = 0
         current_grid = self.grid
         number_of_connected = 0
-        FOUR_CONNECTED = 100
+        FOUR_CONNECTED = 200
         THREE_CONNECTED = 50
         TWO_CONNECTED = 20
         PLAYER_ONE = -1
@@ -243,7 +243,7 @@ class GameState:
                 if current_grid[cell_index] == current_cell:
                     number_of_connected += 1
                 else:
-                    if number_of_connected == 4:
+                    if number_of_connected >= 4:
                         factor = PLAYER_ONE if current_grid[cell_index - 1] == '1' else PLAYER_TWO
                         score += factor * (number_of_connected - 3) * FOUR_CONNECTED
                     number_of_connected = 1
@@ -263,35 +263,26 @@ class GameState:
                 score += factor * TWO_CONNECTED
             number_of_connected = 0
 
-        number_of_connected = 0
         # Check Horizontal Alignments
-        for i in range(0, 7):
+        for i in range(0, 6):
+            number_of_connected = 0
             cell_index = i
             current_cell = current_grid[cell_index]
-            while cell_index <= i + 36:
-                if current_grid[cell_index] == current_cell:
+            for j in range(i, i + 37, 6):
+                if current_grid[j] == current_cell and current_grid[j] != '0':
                     number_of_connected += 1
                 else:
-                    if number_of_connected == 4:
-                        factor = PLAYER_ONE if current_grid[cell_index - 6] == '1' else PLAYER_TWO
+                    factor = PLAYER_ONE if current_grid[cell_index - 6] == '1' else PLAYER_TWO
+                    if 1 < number_of_connected < 4:
+                        if checkRedundancy(current_grid, number_of_connected, i, j, current_grid[j-6]):
+                            if number_of_connected == 3:
+                                score += factor * THREE_CONNECTED
+                            elif number_of_connected == 2:
+                                score += factor * TWO_CONNECTED
+                    elif number_of_connected >= 4:
                         score += factor * (number_of_connected - 3) * FOUR_CONNECTED
                     number_of_connected = 1
-                    current_cell = current_grid[cell_index]
-                cell_index += 6
-
-            if current_grid[cell_index - 6] == '1':
-                factor = PLAYER_ONE
-            else:
-                factor = PLAYER_TWO
-
-            if number_of_connected >= 4:
-                score += factor * (number_of_connected - 3) * FOUR_CONNECTED
-            elif number_of_connected == 3 and cell_index <= (i * 6) + 5:
-                score += factor * THREE_CONNECTED
-            elif number_of_connected == 2 and cell_index <= (i * 6) + 4:
-                score += factor * TWO_CONNECTED
-            number_of_connected = 0
-
+                    current_cell = current_grid[j]
         return score
 
     def isTerminal(self):
@@ -319,6 +310,28 @@ class GameState:
             print()
         print()
 
+
+def checkRedundancy(state, Number, i, j, cell):
+    undesired_cell = '1' if cell == '2' else '2'
+    if Number == 2:
+        left_one = j - (3*6)
+        left_two = j - (4*6)
+        right_one = j
+        right_two = j + 6
+        check_left_one = left_one >= 0 and state[left_one] != undesired_cell
+        check_left_two = left_two >= 0 and state[left_two] != undesired_cell
+        check_right_one = right_one <= 41 and state[right_one] != undesired_cell
+        check_right_two = right_two <= 41 and state[right_two] != undesired_cell
+        return (check_left_one and check_left_two) or \
+               (check_left_two and check_right_one) or \
+               (check_right_two and check_right_one)
+        pass
+    elif Number == 3:
+        left_one = j - 4*6
+        right_one = j
+        check_left_one = left_one >= 0 and state[left_one] != undesired_cell
+        check_right_one = right_one <= 41 and state[left_one] != undesired_cell
+        return check_left_one or check_right_one
 
 # newGrid = "0" * 42
 # gameState = GameState(newGrid, random.choice(PLAYERS), None)
