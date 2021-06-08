@@ -40,10 +40,7 @@ class GameState:
     def makeMove(self, move):
         startOfColumn = move * 6
         newGrid = copy.copy(self.grid)
-        # check if valid move (available slot)
-        if self.grid[startOfColumn + 5] != '0':
-            print("Invalid Move")
-            return
+
         # get the current available cell
         while newGrid[startOfColumn] != '0' and startOfColumn < (move * 6) + 7:
             startOfColumn += 1
@@ -350,8 +347,7 @@ class GameState:
         for i in range(NUM_COLUMNS):
             if self.isValidMove(i):
                 return False
-            else:
-                return True
+        return True
 
     def isWinning(self, player):
         if self.isTerminal():
