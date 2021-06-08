@@ -75,8 +75,6 @@ circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) 
 # for now, I'll use a 2d list to represent the board logically
 board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
 
-print(board_state)
-
 # height array that keeps the height of each column
 # useful for quickly inserting into column
 column_heights = [GAME_VERTICA_TILE_COUNT - 1 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
@@ -93,6 +91,7 @@ def humanPlay(x, y, player):
     performMove(j, player)
 
 
+# takes the 2d board and converts it into appropriate string format
 def buildStateString(board):
     stringList = []
     for column in range(GAME_HORIZONTAL_TILE_COUNT):
@@ -101,13 +100,15 @@ def buildStateString(board):
     return ''.join(str(stringList))
 
 
-# Converts current board state into appropriate format for minimax
+# returns the appropriate action for the AI to perform
+# An integer between 0:6 representing column in which to insert
 def aiPlay():
-    # for now function will use dummy decision function
+    # Converts current board state into appropriate format for minimax
     stateString = buildStateString(board_state)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
     k = 3
-    decision = minimax.dumbDecision(state, k)
+    # for now function will use dummy decision function
+    decision = minimax.decisionMinimax(state, k)
     return decision
 
 
@@ -124,8 +125,8 @@ def performMove(j, player):
     print(buildStateString(board_state))
 
 
+# when board is filled, displays which player won and prompts user to close game or play again
 def gameOver():
-    # when board is filled, displays which player won and prompts user to close game or play again
     # if the height list contains a number larger than -1 there are still moves possible
     for h in column_heights:
         if h > -1:
