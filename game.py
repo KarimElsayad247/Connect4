@@ -161,7 +161,7 @@ confirmButton = pygame_gui.elements.UIButton(
     relative_rect=confirmButtonRect, text="Confirm", manager=manager)
 
 restartButtonRect = pygame.Rect((850, 200), (200, 50))
-restatButton = pygame_gui.elements.UIButton(
+restartButton = pygame_gui.elements.UIButton(
     relative_rect=restartButtonRect, text="Restart", manager=manager)
 
 # the title of the window that appears in title bar
