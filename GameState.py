@@ -480,7 +480,7 @@ def checkRedundancyNegative(state, Number, i, j, cell, start, limit):
 # print(gameState.evalState())
 # print(gameState.grid)
 
-grid = "112220110000211000222220000000000000222000"
-gameState = GameState(grid, random.choice(PLAYERS), None)
-gameState.printGrid()
-print(gameState.eval())
+# grid = "112220110000211000222220000000000000222000"
+# gameState = GameState(grid, random.choice(PLAYERS), None)
+# gameState.printGrid()
+# print(gameState.eval())
