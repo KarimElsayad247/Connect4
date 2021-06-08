@@ -214,17 +214,17 @@ class GameState:
                 score += THREE_CONNECTED[factor]
             elif number_of_connected == 2 and j < (i * 6) + 5:
                 score += TWO_CONNECTED[factor]
-
         # Check Horizontal Alignments
         for i in range(0, 6):
-            number_of_connected = 1
+            number_of_connected = 0
             cell_index = i
             current_cell = current_grid[cell_index]
-            for j in range(i + 6, i + 37, 6):
+            j = i
+            while j <= i + 41:
                 if current_grid[j] == current_cell and current_grid[j] != '0':
                     number_of_connected += 1
                 else:
-                    factor = PLAYER_ONE if current_grid[j - 6] == '1' else PLAYER_TWO
+                    factor = PLAYER_ONE if current_cell == '1' else PLAYER_TWO
                     if 1 < number_of_connected < 4:
                         if checkRedundancy(current_grid, number_of_connected, i, j, current_grid[j - 6]):
                             if number_of_connected == 3:
@@ -235,6 +235,16 @@ class GameState:
                         score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
                     number_of_connected = 1
                     current_cell = current_grid[j]
+                j += 6
+            factor = PLAYER_ONE if current_cell == '1' else PLAYER_TWO
+            if 1 < number_of_connected < 4:
+                if checkRedundancy(current_grid, number_of_connected, i, j, current_grid[j - 6]):
+                    if number_of_connected == 3:
+                        score += THREE_CONNECTED[factor]
+                    elif number_of_connected == 2:
+                        score += TWO_CONNECTED[factor]
+            elif number_of_connected >= 4:
+                score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
 
         positiveDiagonalIndicesStarts = [0, 1, 2, 6, 12, 18]
         positiveDiagonalIndicesEnd = [35, 29, 23, 41, 40, 39]
@@ -263,6 +273,16 @@ class GameState:
                     number_of_connected = 1
                     current_cell = current_grid[j]
                 j += 7
+            factor = PLAYER_ONE if current_grid[j - 7] == '1' else PLAYER_TWO
+            if 1 < number_of_connected < 4:
+                if checkRedundancyPositive(current_grid, number_of_connected,
+                                           i, j, current_grid[j - 7], start, limit):
+                    if number_of_connected == 3:
+                        score += THREE_CONNECTED[factor]
+                    elif number_of_connected == 2:
+                        score += TWO_CONNECTED[factor]
+            elif number_of_connected >= 4:
+                score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
 
         negativeDiagonalIndicesStarts = [36, 37, 38, 30, 24, 18]
         negativeDiagonalIndicesEnd = [11, 17, 23, 5, 4, 3]
@@ -292,6 +312,18 @@ class GameState:
                     number_of_connected = 1
                     current_cell = current_grid[j]
                 j -= 5
+            if 1 < number_of_connected < 4:
+                factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
+                if checkRedundancyNegative(current_grid, number_of_connected,
+                                           i, j, current_grid[j + 5], start, limit):
+                    if number_of_connected == 3:
+                        score += THREE_CONNECTED[factor]
+                    elif number_of_connected == 2:
+                        score += TWO_CONNECTED[factor]
+            elif number_of_connected >= 4:
+                factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
+                score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
+
         # add slight bias towards center columns and lower rows (slightly better possibility for a win)
         HIGH_PRIORITY = 3
         MEDIUM_PRIORITY = 2
@@ -524,7 +556,7 @@ def checkRedundancyNegative(state, Number, i, j, cell, start, limit):
 # print(gameState.evalState())
 # print(gameState.grid)
 
-# grid = "112220110000211000222220000000000000222000"
-# gameState = GameState(grid, random.choice(PLAYERS), None)
-# gameState.printGrid()
-# print(gameState.eval())
+grid = "000000100000220000122210121200110000100000"
+gameState = GameState(grid, 1, None)
+gameState.printGrid()
+print(gameState.eval())

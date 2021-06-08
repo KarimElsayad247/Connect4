@@ -107,7 +107,7 @@ def aiPlay():
     stateString = buildStateString(board_state)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
     print("score: " + str(state.eval()))
-    k = 4
+    k = 7
     decision = minimax.decisionMinimax(state, k)
     return decision
 
