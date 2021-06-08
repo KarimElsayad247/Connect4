@@ -272,9 +272,9 @@ class GameState:
                 if current_grid[j] == current_cell and current_grid[j] != '0':
                     number_of_connected += 1
                 else:
-                    factor = PLAYER_ONE if current_grid[cell_index - 6] == '1' else PLAYER_TWO
+                    factor = PLAYER_ONE if current_grid[j - 6] == '1' else PLAYER_TWO
                     if 1 < number_of_connected < 4:
-                        if checkRedundancy(current_grid, number_of_connected, i, j, current_grid[j-6]):
+                        if checkRedundancy(current_grid, number_of_connected, i, j, current_grid[j]):
                             if number_of_connected == 3:
                                 score += factor * THREE_CONNECTED
                             elif number_of_connected == 2:
@@ -283,6 +283,34 @@ class GameState:
                         score += factor * (number_of_connected - 3) * FOUR_CONNECTED
                     number_of_connected = 1
                     current_cell = current_grid[j]
+
+        positiveDiagonalIndicesStarts = [0, 1, 2, 6, 12, 18]
+        positiveDiagonalIndicesEnd = [35, 29, 23, 41, 40, 39]
+        # Check Positive Diagonal Alignments
+        for i in range(0, 6):
+            number_of_connected = 0
+            start = positiveDiagonalIndicesStarts[i]
+            limit = positiveDiagonalIndicesEnd[i]
+            cell_index = start
+            current_cell = current_grid[cell_index]
+            j = start
+            while j <= limit:
+                if current_grid[j] == current_cell and current_grid[j] != '0':
+                    number_of_connected += 1
+                else:
+                    factor = PLAYER_ONE if current_grid[j - 7] == '1' else PLAYER_TWO
+                    if 1 < number_of_connected < 4:
+                        if checkRedundancyPositive(current_grid, number_of_connected,
+                                                   i, j, current_grid[j], start, limit):
+                            if number_of_connected == 3:
+                                score += factor * THREE_CONNECTED
+                            elif number_of_connected == 2:
+                                score += factor * TWO_CONNECTED
+                    elif number_of_connected >= 4:
+                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                    number_of_connected = 1
+                    current_cell = current_grid[j]
+                j += 7
         return score
 
     def isTerminal(self):
@@ -330,9 +358,31 @@ def checkRedundancy(state, Number, i, j, cell):
         left_one = j - 4*6
         right_one = j
         check_left_one = left_one >= 0 and state[left_one] != undesired_cell
-        check_right_one = right_one <= 41 and state[left_one] != undesired_cell
+        check_right_one = right_one <= 41 and state[right_one] != undesired_cell
         return check_left_one or check_right_one
 
+
+def checkRedundancyPositive(state, Number, i, j, cell, start, limit):
+    undesired_cell = '1' if cell == '2' else '2'
+    if Number == 2:
+        left_one = j - 21
+        left_two = j - 28
+        right_one = j
+        right_two = j + 7
+        check_left_one = left_one >= start and state[left_one] != undesired_cell
+        check_left_two = left_two >= start and state[left_two] != undesired_cell
+        check_right_one = right_one <= limit and state[right_one] != undesired_cell
+        check_right_two = right_two <= limit and state[right_two] != undesired_cell
+        return (check_left_one and check_left_two) or \
+               (check_left_two and check_right_one) or \
+               (check_right_two and check_right_one)
+        pass
+    elif Number == 3:
+        left_one = j - 28
+        right_one = j
+        check_left_one = left_one >= start and state[left_one] != undesired_cell
+        check_right_one = right_one <= limit and state[right_one] != undesired_cell
+        return check_left_one or check_right_one
 # newGrid = "0" * 42
 # gameState = GameState(newGrid, random.choice(PLAYERS), None)
 # printGrid(gameState.grid)
@@ -379,7 +429,7 @@ def checkRedundancy(state, Number, i, j, cell):
 # print(gameState.evalState())
 # print(gameState.grid)
 
-grid = "111120000000210000000000000000000000222000"
+grid = "111120010000211000002200000000000000222000"
 gameState = GameState(grid, random.choice(PLAYERS), None)
 gameState.printGrid()
 print(gameState.eval())
