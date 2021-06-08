@@ -47,16 +47,13 @@ def maximizeMinimax(state: GameState, k):
     # 3. Then loop over all the state children, which are derived from all possible moves
     #    and set utility to minimize(child, k-1)
     for action in actions(state):
-        _, utility = minimizeMinimax(state.makeMove(action), k-1)
+        _, utility = minimizeMinimax(state.makeMove(action), k - 1)
 
         # 4. Then choose maximum out of all children and return it
         if utility > maxUtility:
             maxChild, maxUtility = action, utility
 
     return maxChild, maxUtility
-
-
-
 
 
 def minimizeMinimax(state: GameState, k):
@@ -70,7 +67,7 @@ def minimizeMinimax(state: GameState, k):
 
     # 3. Then loop over each state's children and set utility to maximize(child, k-1)
     for action in actions(state):
-        _, utility = maximizeMinimax(state.makeMove(action), k-1)
+        _, utility = maximizeMinimax(state.makeMove(action), k - 1)
 
         # 4. Choose minimum utility out of all children and return it along with the minChild
         if utility < minUtility:
@@ -91,14 +88,14 @@ def maximizeAlphaBeta(state: GameState, alpha, beta, k):
     # and checks if alpha >= beta, breaks if true
     # updates alpha
 
-    if terminal_state(state,k):
+    if terminal_state(state, k):
         return None, state.evalState(GameState.AI_PLAYER)
     maxChild, maxUtility = (None, -math.inf)
 
     for action in actions(state):
-        _, utility = minimizeAlphaBeta(state.makeMove(action), alpha, beta, k-1)
+        _, utility = minimizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1)
         if utility > maxUtility:
-            maxChild ,maxUtility = action, utility
+            maxChild, maxUtility = action, utility
         # update value of alpha
         if utility > alpha:
             alpha = utility
@@ -117,7 +114,7 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k):
     minChild, minUtility = (None, +math.inf)
 
     for action in actions(state):
-        _, utility = maximizeAlphaBeta(state.makeMove(action), alpha, beta, k-1)
+        _, utility = maximizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1)
         if utility < minUtility:
             minChild, minUtility = action, utility
         # update the value of beta
@@ -139,4 +136,4 @@ def decisionAlphaBeta(state: GameState, alpha, beta, k):
 # temp function to test ai in GUI
 def dumbDecision(state: GameState, k):
     sleep(0.5)
-    return random.randint(0,NUM_COLUMNS - 1)
+    return random.randint(0, NUM_COLUMNS - 1)

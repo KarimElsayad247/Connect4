@@ -1,8 +1,10 @@
 # GUI goes here
+import math
 
 import pygame
 import pygame_gui
 import minimax
+import random
 import GameState
 
 APPLICATION_TITLE = 'Connect4'
@@ -102,15 +104,21 @@ def buildStateString(board):
 
 # returns the appropriate action for the AI to perform
 # An integer between 0:6 representing column in which to insert
-def aiPlay():
+def aiPlay(solveChoice):
     # Converts current board state into appropriate format for minimax
     stateString = buildStateString(board_state)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
-    print("score: " + str(state.eval()))
     k = 4
-    decision = minimax.decisionMinimax(state, k)
+    # calls either Minimax or MinimaxAlphaBeta based on result from dropdown
+    if solveChoice == "MiniMax":
+        decision = minimax.decisionMinimax(state, k)
+    else:
+        decision = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
     return decision
-
+def modifyState():
+    grid = "000000000000000000000000000000000000000000"
+    state = GameState.GameState(grid, random.choice(GameState.PLAYERS), None)
+    return state
 
 # Function that actually inserts a chip into a column
 def performMove(j, player):
@@ -132,7 +140,6 @@ def gameOver():
         if h > -1:
             return False
     return True
-
 
 # must initialize pygame as program start
 # this is just something to be done
@@ -193,11 +200,19 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+
         # ai will move only on its turn.
         if current_player == AI:
-            action = aiPlay()
+            action = aiPlay(solveChoice)
             performMove(action, current_player)
             current_player = HUMAN
+        if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == restartButton:
+                    modifyState()
+                    aiPlay(solveChoice.selected_option)
+                elif event.ui_element == confirmButton:
+                    k = int(inputTextField.text)
 
         # Checking for a mouseclick on a tile
         if event.type == pygame.MOUSEBUTTONDOWN:
