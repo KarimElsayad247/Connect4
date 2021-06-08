@@ -106,7 +106,7 @@ def aiPlay():
     # Converts current board state into appropriate format for minimax
     stateString = buildStateString(board_state)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
-    k = 3
+    k = 4
     # for now function will use dummy decision function
     decision = minimax.decisionMinimax(state, k)
     return decision

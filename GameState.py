@@ -227,9 +227,9 @@ class GameState:
     def eval(self):
         score = 0
         current_grid = self.grid
-        FOUR_CONNECTED = [-450, 400]
-        THREE_CONNECTED = [-70, 70]
-        TWO_CONNECTED = [-20, 20]
+        FOUR_CONNECTED = [-4500, 4000]
+        THREE_CONNECTED = [-500, 500]
+        TWO_CONNECTED = [-100, 100]
         PLAYER_ONE = 0
         PLAYER_TWO = 1
         # Check Vertical Alignments
@@ -238,7 +238,7 @@ class GameState:
             cell_index = i * 6
             current_cell = current_grid[cell_index]
             j = cell_index
-            while current_grid[j] != '0' and j <= (i * 6) + 5:
+            while  j <= (i * 6) + 5 and current_grid[j] != '0' :
                 if current_grid[j] == current_cell:
                     number_of_connected += 1
                 else:
