@@ -39,7 +39,7 @@ def maximizeMinimax(state: GameState, k):
     # 1. Check if this is a terminal state, and if so return its evaluation
     #    A terminal state constitutes either the k depth = 0 was reached or the game is over (board is complete)
     if terminal_state(state, k):
-        return None, state.eval()
+        return None, state.evalState()
 
     # 2. If not, set (maxChild, maxUtility) = (null, -inf)
     maxChild, maxUtility = (None, -math.inf)
@@ -47,7 +47,7 @@ def maximizeMinimax(state: GameState, k):
     # 3. Then loop over all the state children, which are derived from all possible moves
     #    and set utility to minimize(child, k-1)
     for action in actions(state):
-        _, utility = minimizeMinimax(state, k-1)
+        _, utility = minimizeMinimax(state.makeMove(action), k-1)
 
         # 4. Then choose maximum out of all children and return it
         if utility > maxUtility:
@@ -60,14 +60,14 @@ def minimizeMinimax(state: GameState, k):
     # Steps
     # 1. Check if terminal, and if so return evaluation
     if terminal_state(state, k):
-        return None, state.eval()
+        return None, state.evalState()
 
     # 2. Else set (minChild, minUtility) = (null, inf)
     minChild, minUtility = (None, math.inf)
 
     # 3. Then loop over each state's children and set utility to maximize(child, k-1)
     for action in actions(state):
-        _, utility = maximizeMinimax(state, k-1)
+        _, utility = maximizeMinimax(state.makeMove(action), k-1)
 
         # 4. Choose minimum utility out of all children and return it along with the minChild
         if utility < minUtility:
