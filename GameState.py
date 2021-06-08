@@ -227,10 +227,10 @@ class GameState:
     def eval(self):
         score = 0
         current_grid = self.grid
-        FOUR_CONNECTED = 300
-        THREE_CONNECTED = 70
-        TWO_CONNECTED = 20
-        PLAYER_ONE = -1
+        FOUR_CONNECTED = [-450, 400]
+        THREE_CONNECTED = [-70, 70]
+        TWO_CONNECTED = [-20, 20]
+        PLAYER_ONE = 0
         PLAYER_TWO = 1
         # Check Vertical Alignments
         for i in range(0, 7):
@@ -244,7 +244,7 @@ class GameState:
                 else:
                     if number_of_connected >= 4:
                         factor = PLAYER_ONE if current_grid[j - 1] == '1' else PLAYER_TWO
-                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                        score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
                     number_of_connected = 1
                     current_cell = current_grid[j]
                 j += 1
@@ -255,11 +255,11 @@ class GameState:
                 factor = PLAYER_TWO
 
             if number_of_connected >= 4:
-                score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
             elif number_of_connected == 3 and j < (i * 6) + 6:
-                score += factor * THREE_CONNECTED
+                score += THREE_CONNECTED[factor]
             elif number_of_connected == 2 and j < (i * 6) + 5:
-                score += factor * TWO_CONNECTED
+                score += TWO_CONNECTED[factor]
 
         # Check Horizontal Alignments
         for i in range(0, 6):
@@ -274,11 +274,11 @@ class GameState:
                     if 1 < number_of_connected < 4:
                         if checkRedundancy(current_grid, number_of_connected, i, j, current_grid[j - 6]):
                             if number_of_connected == 3:
-                                score += factor * THREE_CONNECTED
+                                score += THREE_CONNECTED[factor]
                             elif number_of_connected == 2:
-                                score += factor * TWO_CONNECTED
+                                score += TWO_CONNECTED[factor]
                     elif number_of_connected >= 4:
-                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                        score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
                     number_of_connected = 1
                     current_cell = current_grid[j]
 
@@ -301,11 +301,11 @@ class GameState:
                         if checkRedundancyPositive(current_grid, number_of_connected,
                                                    i, j, current_grid[j - 7], start, limit):
                             if number_of_connected == 3:
-                                score += factor * THREE_CONNECTED
+                                score += THREE_CONNECTED[factor]
                             elif number_of_connected == 2:
-                                score += factor * TWO_CONNECTED
+                                score += TWO_CONNECTED[factor]
                     elif number_of_connected >= 4:
-                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                        score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
                     number_of_connected = 1
                     current_cell = current_grid[j]
                 j += 7
@@ -329,12 +329,12 @@ class GameState:
                         if checkRedundancyNegative(current_grid, number_of_connected,
                                                    i, j, current_grid[j + 5], start, limit):
                             if number_of_connected == 3:
-                                score += factor * THREE_CONNECTED
+                                score += THREE_CONNECTED[factor]
                             elif number_of_connected == 2:
-                                score += factor * TWO_CONNECTED
+                                score += TWO_CONNECTED[factor]
                     elif number_of_connected >= 4:
                         factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
-                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+                        score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
                     number_of_connected = 1
                     current_cell = current_grid[j]
                 j -= 5
