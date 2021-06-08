@@ -237,20 +237,22 @@ class GameState:
         PLAYER_TWO = 1
         # Check Vertical Alignments
         for i in range(0, 7):
+            number_of_connected = 0
             cell_index = i * 6
             current_cell = current_grid[cell_index]
-            while current_grid[cell_index] != '0' and cell_index <= (i * 6) + 5:
-                if current_grid[cell_index] == current_cell:
+            j = cell_index
+            while current_grid[j] != '0' and j <= (i * 6) + 5:
+                if current_grid[j] == current_cell:
                     number_of_connected += 1
                 else:
                     if number_of_connected >= 4:
-                        factor = PLAYER_ONE if current_grid[cell_index - 1] == '1' else PLAYER_TWO
+                        factor = PLAYER_ONE if current_grid[j - 1] == '1' else PLAYER_TWO
                         score += factor * (number_of_connected - 3) * FOUR_CONNECTED
-                    number_of_connected = 1
-                    current_cell = current_grid[cell_index]
-                cell_index += 1
+                    number_of_connected = 0
+                    current_cell = current_grid[j]
+                j += 1
 
-            if current_grid[cell_index - 1] == '1':
+            if current_grid[j - 1] == '1':
                 factor = PLAYER_ONE
             else:
                 factor = PLAYER_TWO
@@ -261,84 +263,83 @@ class GameState:
                 score += factor * THREE_CONNECTED
             elif number_of_connected == 2 and cell_index <= (i * 6) + 4:
                 score += factor * TWO_CONNECTED
-            number_of_connected = 0
 
-        # Check Horizontal Alignments
-        for i in range(0, 6):
-            number_of_connected = 0
-            cell_index = i
-            current_cell = current_grid[cell_index]
-            for j in range(i, i + 37, 6):
-                if current_grid[j] == current_cell and current_grid[j] != '0':
-                    number_of_connected += 1
-                else:
-                    factor = PLAYER_ONE if current_grid[j - 6] == '1' else PLAYER_TWO
-                    if 1 < number_of_connected < 4:
-                        if checkRedundancy(current_grid, number_of_connected, i, j, current_grid[j]):
-                            if number_of_connected == 3:
-                                score += factor * THREE_CONNECTED
-                            elif number_of_connected == 2:
-                                score += factor * TWO_CONNECTED
-                    elif number_of_connected >= 4:
-                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
-                    number_of_connected = 1
-                    current_cell = current_grid[j]
-
-        positiveDiagonalIndicesStarts = [0, 1, 2, 6, 12, 18]
-        positiveDiagonalIndicesEnd = [35, 29, 23, 41, 40, 39]
-        # Check Positive Diagonal Alignments
-        for i in range(0, 6):
-            number_of_connected = 0
-            start = positiveDiagonalIndicesStarts[i]
-            limit = positiveDiagonalIndicesEnd[i]
-            cell_index = start
-            current_cell = current_grid[cell_index]
-            j = start
-            while j <= limit:
-                if current_grid[j] == current_cell and current_grid[j] != '0':
-                    number_of_connected += 1
-                else:
-                    factor = PLAYER_ONE if current_grid[j - 7] == '1' else PLAYER_TWO
-                    if 1 < number_of_connected < 4:
-                        if checkRedundancyPositive(current_grid, number_of_connected,
-                                                   i, j, current_grid[j], start, limit):
-                            if number_of_connected == 3:
-                                score += factor * THREE_CONNECTED
-                            elif number_of_connected == 2:
-                                score += factor * TWO_CONNECTED
-                    elif number_of_connected >= 4:
-                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
-                    number_of_connected = 1
-                    current_cell = current_grid[j]
-                j += 7
-
-        negativeDiagonalIndicesStarts = [36, 37, 38, 30, 24, 18]
-        negativeDiagonalIndicesEnd = [11, 17, 23, 5, 4, 3]
-        # Check Negative Diagonal Alignments
-        for i in range(0, 6):
-            number_of_connected = 0
-            start = negativeDiagonalIndicesStarts[i]
-            limit = negativeDiagonalIndicesEnd[i]
-            cell_index = start
-            current_cell = current_grid[cell_index]
-            j = start
-            while j >= limit:
-                if current_grid[j] == current_cell and current_grid[j] != '0':
-                    number_of_connected += 1
-                else:
-                    factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
-                    if 1 < number_of_connected < 4:
-                        if checkRedundancyNegative(current_grid, number_of_connected,
-                                                   i, j, current_grid[j], start, limit):
-                            if number_of_connected == 3:
-                                score += factor * THREE_CONNECTED
-                            elif number_of_connected == 2:
-                                score += factor * TWO_CONNECTED
-                    elif number_of_connected >= 4:
-                        score += factor * (number_of_connected - 3) * FOUR_CONNECTED
-                    number_of_connected = 1
-                    current_cell = current_grid[j]
-                j -= 5
+        # # Check Horizontal Alignments
+        # for i in range(0, 6):
+        #     number_of_connected = 0
+        #     cell_index = i
+        #     current_cell = current_grid[cell_index]
+        #     for j in range(i, i + 37, 6):
+        #         if current_grid[j] == current_cell and current_grid[j] != '0':
+        #             number_of_connected += 1
+        #         else:
+        #             factor = PLAYER_ONE if current_grid[j - 6] == '1' else PLAYER_TWO
+        #             if 1 < number_of_connected < 4:
+        #                 if checkRedundancy(current_grid, number_of_connected, i, j, current_grid[j]):
+        #                     if number_of_connected == 3:
+        #                         score += factor * THREE_CONNECTED
+        #                     elif number_of_connected == 2:
+        #                         score += factor * TWO_CONNECTED
+        #             elif number_of_connected >= 4:
+        #                 score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+        #             number_of_connected = 1
+        #             current_cell = current_grid[j]
+        #
+        # positiveDiagonalIndicesStarts = [0, 1, 2, 6, 12, 18]
+        # positiveDiagonalIndicesEnd = [35, 29, 23, 41, 40, 39]
+        # # Check Positive Diagonal Alignments
+        # for i in range(0, 6):
+        #     number_of_connected = 0
+        #     start = positiveDiagonalIndicesStarts[i]
+        #     limit = positiveDiagonalIndicesEnd[i]
+        #     cell_index = start
+        #     current_cell = current_grid[cell_index]
+        #     j = start
+        #     while j <= limit:
+        #         if current_grid[j] == current_cell and current_grid[j] != '0':
+        #             number_of_connected += 1
+        #         else:
+        #             factor = PLAYER_ONE if current_grid[j - 7] == '1' else PLAYER_TWO
+        #             if 1 < number_of_connected < 4:
+        #                 if checkRedundancyPositive(current_grid, number_of_connected,
+        #                                            i, j, current_grid[j], start, limit):
+        #                     if number_of_connected == 3:
+        #                         score += factor * THREE_CONNECTED
+        #                     elif number_of_connected == 2:
+        #                         score += factor * TWO_CONNECTED
+        #             elif number_of_connected >= 4:
+        #                 score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+        #             number_of_connected = 1
+        #             current_cell = current_grid[j]
+        #         j += 7
+        #
+        # negativeDiagonalIndicesStarts = [36, 37, 38, 30, 24, 18]
+        # negativeDiagonalIndicesEnd = [11, 17, 23, 5, 4, 3]
+        # # Check Negative Diagonal Alignments
+        # for i in range(0, 6):
+        #     number_of_connected = 0
+        #     start = negativeDiagonalIndicesStarts[i]
+        #     limit = negativeDiagonalIndicesEnd[i]
+        #     cell_index = start
+        #     current_cell = current_grid[cell_index]
+        #     j = start
+        #     while j >= limit:
+        #         if current_grid[j] == current_cell and current_grid[j] != '0':
+        #             number_of_connected += 1
+        #         else:
+        #             factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
+        #             if 1 < number_of_connected < 4:
+        #                 if checkRedundancyNegative(current_grid, number_of_connected,
+        #                                            i, j, current_grid[j], start, limit):
+        #                     if number_of_connected == 3:
+        #                         score += factor * THREE_CONNECTED
+        #                     elif number_of_connected == 2:
+        #                         score += factor * TWO_CONNECTED
+        #             elif number_of_connected >= 4:
+        #                 score += factor * (number_of_connected - 3) * FOUR_CONNECTED
+        #             number_of_connected = 1
+        #             current_cell = current_grid[j]
+        #         j -= 5
         return score
 
     def isTerminal(self):
