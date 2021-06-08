@@ -227,8 +227,8 @@ class GameState:
     def eval(self):
         score = 0
         current_grid = self.grid
-        FOUR_CONNECTED = 200
-        THREE_CONNECTED = 50
+        FOUR_CONNECTED = 300
+        THREE_CONNECTED = 70
         TWO_CONNECTED = 20
         PLAYER_ONE = -1
         PLAYER_TWO = 1
@@ -324,8 +324,8 @@ class GameState:
                 if current_grid[j] == current_cell and current_grid[j] != '0':
                     number_of_connected += 1
                 else:
-                    factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
                     if 1 < number_of_connected < 4:
+                        factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
                         if checkRedundancyNegative(current_grid, number_of_connected,
                                                    i, j, current_grid[j + 5], start, limit):
                             if number_of_connected == 3:
@@ -333,6 +333,7 @@ class GameState:
                             elif number_of_connected == 2:
                                 score += factor * TWO_CONNECTED
                     elif number_of_connected >= 4:
+                        factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
                         score += factor * (number_of_connected - 3) * FOUR_CONNECTED
                     number_of_connected = 1
                     current_cell = current_grid[j]

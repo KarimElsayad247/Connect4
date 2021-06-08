@@ -39,7 +39,7 @@ def maximizeMinimax(state: GameState, k):
     # 1. Check if this is a terminal state, and if so return its evaluation
     #    A terminal state constitutes either the k depth = 0 was reached or the game is over (board is complete)
     if terminal_state(state, k):
-        return None, state.evalState()
+        return None, state.eval()
 
     # 2. If not, set (maxChild, maxUtility) = (null, -inf)
     maxChild, maxUtility = (None, -math.inf)
@@ -60,7 +60,7 @@ def minimizeMinimax(state: GameState, k):
     # Steps
     # 1. Check if terminal, and if so return evaluation
     if terminal_state(state, k):
-        return None, state.evalState()
+        return None, state.eval()
 
     # 2. Else set (minChild, minUtility) = (null, inf)
     minChild, minUtility = (None, math.inf)
