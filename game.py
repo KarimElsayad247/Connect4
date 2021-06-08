@@ -96,8 +96,8 @@ def buildStateString(board):
     stringList = []
     for column in range(GAME_HORIZONTAL_TILE_COUNT):
         for row in range(GAME_VERTICA_TILE_COUNT - 1, -1, -1):
-            stringList.append(board[row][column])
-    return ''.join(str(stringList))
+            stringList.append(str(board[row][column]))
+    return ''.join(stringList)
 
 
 # returns the appropriate action for the AI to perform
