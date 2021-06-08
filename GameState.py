@@ -247,7 +247,7 @@ class GameState:
                     if number_of_connected >= 4:
                         factor = PLAYER_ONE if current_grid[j - 1] == '1' else PLAYER_TWO
                         score += factor * (number_of_connected - 3) * FOUR_CONNECTED
-                    number_of_connected = 0
+                    number_of_connected = 1
                     current_cell = current_grid[j]
                 j += 1
 
@@ -483,7 +483,7 @@ def checkRedundancyNegative(state, Number, i, j, cell, start, limit):
 # print(gameState.evalState())
 # print(gameState.grid)
 
-grid = "111200010000211000222200000000000000222000"
+grid = "111200110000211000222200000000000000222000"
 gameState = GameState(grid, random.choice(PLAYERS), None)
 gameState.printGrid()
 print(gameState.eval())
