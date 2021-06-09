@@ -7,6 +7,9 @@ from time import sleep
 NUM_COLUMNS = 7
 dictionary = dict()
 
+# 0 | 1 | 2 | 3 | 4 | 5 | 6
+ACTION_BY_PRIORITY = [3, 2, 4, 1, 5, 0, 6]
+
 
 def actions(state: GameState):
     """
@@ -15,7 +18,7 @@ def actions(state: GameState):
     substitute for GameState.expand. Can be moved in GameState later
     """
     actions_list = []
-    for i in range(NUM_COLUMNS):
+    for i in ACTION_BY_PRIORITY:
         if state.isValidMove(i):
             actions_list.append(i)
     return actions_list
