@@ -21,13 +21,11 @@ MAIN_RADIUS = 50
 THICKNESS = 5
 CIRCLE_MARGIN = THICKNESS + 10
 
-
 COLUMN_WIDTH = MAIN_RADIUS * 2 + CIRCLE_MARGIN
 COLUMN_HEIGHT = MAIN_RADIUS * 2 + CIRCLE_MARGIN
 
 GAME_AREA_WIDTH = COLUMN_WIDTH * GAME_HORIZONTAL_TILE_COUNT
 GAME_AREA_HEIGHT = COLUMN_HEIGHT * GAME_VERTICA_TILE_COUNT
-
 
 print(GAME_AREA_WIDTH)
 print(GAME_AREA_HEIGHT)
@@ -62,33 +60,41 @@ class Circle:
         pygame.draw.circle(window, self.color, (self.x, self.y), self.r)
 
 
-# create a 2d matrix of circles for the game board
-board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN) * i,
-                         BOARD_START_Y + 50 + (100 + CIRCLE_MARGIN) * j, MAIN_RADIUS, GREY)
-                  for i in range(GAME_HORIZONTAL_TILE_COUNT)]
-                 for j in range(GAME_VERTICA_TILE_COUNT)]
+class Board:
 
-# larger circles around the base circles that will give the illusion of edges
-circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) for circle in row] for row in
-                board_circles]
+    def __init__(self):
+        # create a 2d matrix of circles for the game board
+        self.board_circles = [[Circle(BOARD_START_X + 50 + (100 + CIRCLE_MARGIN) * i,
+                                      BOARD_START_Y + 50 + (100 + CIRCLE_MARGIN) * j, MAIN_RADIUS, GREY)
+                               for i in range(GAME_HORIZONTAL_TILE_COUNT)]
+                              for j in range(GAME_VERTICA_TILE_COUNT)]
 
-# for now, I'll use a 2d list to represent the board logically
-board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
+        # larger circles around the base circles that will give the illusion of edges
+        self.circle_edges = [[Circle(circle.x, circle.y, MAIN_RADIUS + THICKNESS, DARK_BLUE) for circle in row]
+                             for row in self.board_circles]
 
-# height array that keeps the height of each column
-# useful for quickly inserting into column
-column_heights = [GAME_VERTICA_TILE_COUNT - 1 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
+        # for now, I'll use a 2d list to represent the board logically
+        self.board_state = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
+
+        # height array that keeps the height of each column
+        # useful for quickly inserting into column
+        # the larger the number, the shorter the column
+        # starts with all columns at value = 5
+        self.column_heights = [GAME_VERTICA_TILE_COUNT - 1 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
+
+
+gameBoard = Board()
 
 # variable that controls color of each inserted
 current_player = HUMAN
 
 
-def humanPlay(x, y, player):
+def humanPlay(x, y, player, board):
     i = int((y - BOARD_START_Y / 2) // COLUMN_HEIGHT)
     j = int((x - BOARD_START_X / 2) // COLUMN_WIDTH)
     print(f'clicked row {i}')
     print(f'clicked column {j}')
-    performMove(j, player)
+    performMove(j, player, board)
 
 
 # takes the 2d board and converts it into appropriate string format
@@ -96,15 +102,37 @@ def buildStateString(board):
     stringList = []
     for column in range(GAME_HORIZONTAL_TILE_COUNT):
         for row in range(GAME_VERTICA_TILE_COUNT - 1, -1, -1):
-            stringList.append(str(board[row][column]))
+            stringList.append(str(board.board_state[row][column]))  # GameState wants strings
     return ''.join(stringList)
+
+
+# returns the values used for the new column_heights array after modifying state
+def calculateColumnHeights(board):
+    heights = [GAME_VERTICA_TILE_COUNT - 1 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
+    for j in range(GAME_HORIZONTAL_TILE_COUNT):  # for each column
+        for i in range(GAME_VERTICA_TILE_COUNT - 1, -1, -1):  # for each row in column starting from below
+            if board.board_state[i][j] != 0:  # if state is not 0, then it's used
+                heights[j] -= 1
+    return heights
+
+
+# returns a 2d list containing the new board state
+# the string is the one usually used to represent a state
+def buildBoardListFromString(stateString: str):
+    board_list = [[0 for i in range(GAME_HORIZONTAL_TILE_COUNT)] for j in range(GAME_VERTICA_TILE_COUNT)]
+    stringPointer = 0
+    for j in range(GAME_HORIZONTAL_TILE_COUNT):
+        for i in range(GAME_VERTICA_TILE_COUNT - 1, -1, -1):
+            board_list[i][j] = int(stateString[stringPointer])  # from string to int since GUI uses ints for stuff
+            stringPointer += 1
+    return board_list
 
 
 # returns the appropriate action for the AI to perform
 # An integer between 0:6 representing column in which to insert
-def aiPlay():
+def aiPlay(board):
     # Converts current board state into appropriate format for minimax
-    stateString = buildStateString(board_state)
+    stateString = buildStateString(board)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
     print("score: " + str(state.eval()))
     k = 3
@@ -117,22 +145,34 @@ def aiPlay():
 
 
 # Function that actually inserts a chip into a column
-def performMove(j, player):
-    if column_heights[j] >= 0:
-        board_state[column_heights[j]][j] = player
-        board_circles[column_heights[j]][j].color = PLAYER_COLORS[player]
-        column_heights[j] -= 1
+def performMove(j, player, board):
+    if board.column_heights[j] >= 0:
+        board.board_state[board.column_heights[j]][j] = player
+        board.board_circles[board.column_heights[j]][j].color = PLAYER_COLORS[player]
+        board.column_heights[j] -= 1
     else:
         print("can't insert here")
         # TODO: ERROR BOX
 
-    print(buildStateString(board_state))
+    print(buildStateString(board))
+
+
+# takes a string representing a board state and changes relevant board variables
+# to reflect said string
+def modifyState(stateString: str):
+    board = Board()
+    board.board_state = buildBoardListFromString(stateString)
+    for circle_row, state_row in zip(board.board_circles, board.board_state):
+        for circle, state in zip(circle_row, state_row):
+            circle.color = PLAYER_COLORS[state]
+    board.column_heights = calculateColumnHeights(board)
+    return board
 
 
 # when board is filled, displays which player won and prompts user to close game or play again
-def gameOver():
+def gameOver(board):
     # if the height list contains a number larger than -1 there are still moves possible
-    for h in column_heights:
+    for h in board.column_heights:
         if h > -1:
             return False
     return True
@@ -152,7 +192,7 @@ manager = pygame_gui.UIManager((WINDOW_WIDTH, WINDOW_HEIGHT))
 inputTextFieldRect = pygame.Rect((850, 50), (200, 50))
 inputTextField = pygame_gui.elements.UITextEntryLine(
     relative_rect=inputTextFieldRect, manager=manager)
-inputTextField.set_allowed_characters(["0", "1", "2", "3", "4", "5", "6", "7", "8","9"])
+inputTextField.set_allowed_characters(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
 inputTextField.set_text_length_limit(1)
 
 solveChoiceRect = pygame.Rect((850, 100), (200, 50))
@@ -197,22 +237,28 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        # specific to the UI library. all events related to pygame_gui go here
+        if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == restartButton:
+                    gameBoard = modifyState("000000000000000000000000000000000000000000")
+
         # ai will move only on its turn.
         if current_player == AI:
-            action = aiPlay()
-            performMove(action, current_player)
+            action = aiPlay(gameBoard)
+            performMove(action, current_player, gameBoard)
             current_player = HUMAN
 
         # Checking for a mouseclick on a tile
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
-            if not gameOver():
+            if not gameOver(gameBoard):
                 if current_player == HUMAN:
                     # Check If the position of mouse click is within border of Tile Area
                     # No need to do any swapping otherwise
                     print(f'clicked {event.pos[0]}, {event.pos[1]}')
                     if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
-                        humanPlay(event.pos[0], event.pos[1], current_player)
+                        humanPlay(event.pos[0], event.pos[1], current_player, gameBoard)
                         current_player = AI
             else:
                 print(f'Game Over! press restart when available')
@@ -228,11 +274,11 @@ while running:
     # Drawing game objects
 
     # draw the edges firs, because we want the circles to cover them
-    for row in circle_edges:
+    for row in gameBoard.circle_edges:
         for edge in row:
             edge.draw()
 
-    for row in board_circles:
+    for row in gameBoard.board_circles:
         for circle in row:
             circle.draw()
 
