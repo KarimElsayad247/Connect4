@@ -4,7 +4,6 @@ import math
 import random
 from time import sleep
 
-
 """
 Karim Elsayed ID.6023
 Ahmed Saad ID.6060
@@ -21,13 +20,60 @@ ACTION_BY_PRIORITY = [3, 2, 4, 1, 5, 0, 6]
 
 class Node:
 
-    def __init__(self):
-        self.val = 0
+    def __init__(self, parent):
+        self.value = 0
         self.children = []
-        self.minMax = False
+        self.parent = parent
+        if self.parent:
+            self.maximizing = not self.parent.maximizing
+            self.depth = parent.depth + 1
+        else:
+            self.maximizing = True
+            self.depth = 0
 
     def insertChild(self, node):
         self.children.append(node)
+
+    # def propagateUp(self):  # function that is called when leaf node is chosen as the final decision
+    #     self.parent.value = self.value
+    #     self.parent.propagateUp()
+
+    def addChild(self):
+        child = Node(self)
+        self.children.append(child)
+        return child
+
+
+def printTree(root):
+    if root:
+        if root.children:
+            if root.maximizing:
+                string = "/MAX"
+            else:
+                string = "/MIN"
+        else:
+            string = ""
+        spaces = "  " * root.depth * 5
+        if root.parent is None:
+            parentDepth = 0
+        else:
+            parentDepth = root.parent.depth
+        dashes = "--" * (root.depth - parentDepth) * 5
+        # spaces = "  " * parentDepth * 5
+        # print(f"{spaces}|{dashes}[{root.value}]{string}")
+        spaces = "  " * 5
+        # if root.depth != 0:
+        for i in range (root.depth):
+            print(f"|{spaces}", end="")
+        # if root.parent and root.parent.children[len(root.parent.children) - 1].value == root.value:
+        #     print(f"{dashes}-", end="")
+        # else:
+        #     print(f"|{spaces}", end="")
+
+        print(f"|{dashes}[{root.value}]{string}")
+
+        for child in root.children:
+            printTree(child)
 
 
 def actions(state: GameState):
@@ -57,10 +103,7 @@ def terminal_state(state: GameState, k):
 # AI player will call this function
 # instead of a child, the function returns an action which is a number in range(0:7)
 # This makes it easier for GUI to make move
-def maximizeMinimax(state: GameState, k):
-
-    
-
+def maximizeMinimax(state: GameState, k, root):
     # Steps:
     # 1. Check if this is a terminal state, and if so return its evaluation
     #    A terminal state constitutes either the k depth = 0 was reached or the game is over (board is complete)
@@ -69,6 +112,7 @@ def maximizeMinimax(state: GameState, k):
             return None, dictionary.get(state.grid)
         temp = state.eval()
         dictionary[state.grid] = temp
+        root.value = temp
         return None, temp
 
     # 2. If not, set (maxChild, maxUtility) = (null, -inf)
@@ -77,16 +121,16 @@ def maximizeMinimax(state: GameState, k):
     # 3. Then loop over all the state children, which are derived from all possible moves
     #    and set utility to minimize(child, k-1)
     for action in actions(state):
-        _, utility = minimizeMinimax(state.makeMove(action), k - 1)
-
+        _, utility = minimizeMinimax(state.makeMove(action), k - 1, root.addChild())
         # 4. Then choose maximum out of all children and return it
         if utility > maxUtility:
             maxChild, maxUtility = action, utility
+            root.value = maxUtility
 
     return maxChild, maxUtility
 
 
-def minimizeMinimax(state: GameState, k):
+def minimizeMinimax(state: GameState, k, root):
     # Steps
     # 1. Check if terminal, and if so return evaluation
     if terminal_state(state, k):
@@ -94,6 +138,7 @@ def minimizeMinimax(state: GameState, k):
             return None, dictionary.get(state.grid)
         temp = state.eval()
         dictionary[state.grid] = temp
+        root.value = temp
         return None, temp
 
     # 2. Else set (minChild, minUtility) = (null, inf)
@@ -101,23 +146,27 @@ def minimizeMinimax(state: GameState, k):
 
     # 3. Then loop over each state's children and set utility to maximize(child, k-1)
     for action in actions(state):
-        _, utility = maximizeMinimax(state.makeMove(action), k - 1)
+
+        _, utility = maximizeMinimax(state.makeMove(action), k - 1, root.addChild())
 
         # 4. Choose minimum utility out of all children and return it along with the minChild
         if utility < minUtility:
             minChild, minUtility = action, utility
+            root.value = minUtility
 
     return minChild, minUtility
 
 
 def decisionMinimax(state: GameState, k):  # returns an integer between 0:7
     # The AI player is the calls maximize(state, k) and set child to it, then return it
-    action, _ , root = maximizeMinimax(state, k)
+    root = Node(None)
+    action, _ = maximizeMinimax(state, k, root)
+    printTree(root)
     return action
 
 
 # Minimax with alpha-beta pruning algorithms
-def maximizeAlphaBeta(state: GameState, alpha, beta, k):
+def maximizeAlphaBeta(state: GameState, alpha, beta, k, root):
     # just like normal maximize, but when looping over children, alpha is set to max
     # and checks if alpha >= beta, breaks if true
     # updates alpha
@@ -127,15 +176,17 @@ def maximizeAlphaBeta(state: GameState, alpha, beta, k):
             return None, dictionary.get(state.grid)
         temp = state.eval()
         dictionary[state.grid] = temp
+        root.value = temp
         return None, temp
 
     maxChild, maxUtility = (None, -math.inf)
 
     for action in actions(state):
-        _, utility = minimizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1)
+        _, utility = minimizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1, root.addChild())
 
         if utility > maxUtility:
             maxChild, maxUtility = action, utility
+            root.value = maxUtility
 
         # check if the value of beta is lower than alpha then prune the rest of the tree
         if maxUtility >= beta:
@@ -148,7 +199,7 @@ def maximizeAlphaBeta(state: GameState, alpha, beta, k):
     return maxChild, maxUtility
 
 
-def minimizeAlphaBeta(state: GameState, alpha, beta, k):
+def minimizeAlphaBeta(state: GameState, alpha, beta, k, root):
     # just like normal minimize, but when looping over children, beta is set to min
     # and checks if beta <= alpha, breaks if true
     # updates min
@@ -157,14 +208,16 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k):
             return None, dictionary.get(state.grid)
         temp = state.eval()
         dictionary[state.grid] = temp
+        root.value = temp
         return None, temp
     minChild, minUtility = (None, +math.inf)
 
     for action in actions(state):
-        _, utility = maximizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1)
+        _, utility = maximizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1, root.addChild())
 
         if utility < minUtility:
             minChild, minUtility = action, utility
+            root.value = minUtility
 
         # check if the value of beta is lower than alpha then prune the rest of the tree
         if minUtility <= alpha:
@@ -180,7 +233,9 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k):
 def decisionAlphaBeta(state: GameState, alpha, beta, k):
     # calls maximize(state, -inf, inf, k)
     # returns child returned from maximize
-    action, _ = maximizeAlphaBeta(state, alpha, beta, k)
+    root = Node(None)
+    action, _ = maximizeAlphaBeta(state, alpha, beta, k, root)
+    printTree(root)
     return action
 
 
