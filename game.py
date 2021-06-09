@@ -1,5 +1,5 @@
 # GUI goes here
-
+import math
 import pygame
 import pygame_gui
 import minimax
@@ -107,8 +107,12 @@ def aiPlay():
     stateString = buildStateString(board_state)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
     print("score: " + str(state.eval()))
-    k = 7
-    decision = minimax.decisionMinimax(state, k)
+    k = 3
+    # calls either Minimax or MinimaxAlphaBeta based on result from dropdown
+    if solveChoice == "MiniMax":
+        decision = minimax.decisionMinimax(state, k)
+    else:
+        decision = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
     return decision
 
 
