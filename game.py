@@ -347,7 +347,7 @@ while running:
                 gameState = GameState.GameState(state, None, None)
                 if gameState.isWinning():
                     alert_label(f'Computer won!')
-                elif gameState.isWinning():
+                elif gameState.isWinning() is not True:
                     alert_label("You won!")
 
         manager.process_events(event)
