@@ -4,6 +4,14 @@ import math
 import random
 from time import sleep
 
+
+"""
+Karim Elsayed ID.6023
+Ahmed Saad ID.6060
+Heba Elwazzan ID.6521
+Youssef Nawar ID.6602
+"""
+
 NUM_COLUMNS = 7
 dictionary = dict()
 

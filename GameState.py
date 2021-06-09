@@ -2,6 +2,13 @@ import copy
 import random
 import timeit
 
+"""
+Karim Elsayed ID.6023
+Ahmed Saad ID.6060
+Heba Elwazzan ID.6521
+Youssef Nawar ID.6602
+"""
+
 AI_PLAYER = '2'
 HUMAN_PLAYER = '1'
 
@@ -365,58 +372,6 @@ class GameState:
                 score -= LOW_PRIORITY
         return score
 
-    def countMatchingFours(self):
-        if self.isTerminal():
-            positiveDiagonalIndices = [0, 1, 2, 6, 7, 8, 12, 13, 14, 18, 19, 20]
-            negativeDiagonalIndices = [3, 4, 5, 9, 10, 11, 15, 16, 17, 21, 22, 23]
-            positiveDiagonalFor3 = copy.copy(positiveDiagonalIndices)
-            positiveDiagonalFor3.extend([9, 15, 21, 25, 26, 27])
-            negativeDiagonalFor3 = copy.copy(negativeDiagonalIndices)
-            negativeDiagonalFor3.extend([8, 14, 20, 26, 27, 28])
-            positiveDiagonalFor2 = copy.copy(positiveDiagonalFor3)
-            positiveDiagonalFor2.extend([16, 22, 28, 32, 33, 34])
-            negativeDiagonalFor2 = copy.copy(negativeDiagonalFor3)
-            negativeDiagonalFor2.extend([13, 19, 25, 31, 32, 33])
-            currGrid = self.grid
-            score = 0
-            # 1. HORIZONTALLY:
-            for i in range(23):
-                if currGrid[i] == AI_PLAYER and currGrid[i + 6] == AI_PLAYER and currGrid[i + 12] == AI_PLAYER \
-                        and currGrid[i + 18] == AI_PLAYER:
-                    score += 1
-                elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 6] == HUMAN_PLAYER \
-                        and currGrid[i + 12] == HUMAN_PLAYER and currGrid[i + 18] == HUMAN_PLAYER:
-                    score -= 1
-            # 2. Vertically
-            for j in range(0, 36, 6):
-                for i in range(4):
-                    if currGrid[i + j] == AI_PLAYER and currGrid[i + j + 1] == AI_PLAYER and currGrid[
-                        i + j + 2] == AI_PLAYER \
-                            and currGrid[i + j + 3] == AI_PLAYER:
-                        score += 1
-                    elif currGrid[i + j] == HUMAN_PLAYER and currGrid[i + j + 1] == HUMAN_PLAYER \
-                            and currGrid[i + j + 2] == HUMAN_PLAYER and currGrid[i + j + 3] == HUMAN_PLAYER:
-                        score -= 1
-            # 3. Positively sloped diagonals:
-            # (don't consider the cases where the diagonal length is less than 4 as it is meaningless)
-            for i in positiveDiagonalIndices:
-                if currGrid[i] == AI_PLAYER and currGrid[i + 7] == AI_PLAYER and currGrid[i + 14] == AI_PLAYER \
-                        and currGrid[i + 21] == AI_PLAYER:
-                    score += 1
-                elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 7] == HUMAN_PLAYER \
-                        and currGrid[i + 14] == HUMAN_PLAYER and currGrid[i + 21] == HUMAN_PLAYER:
-                    score -= 1
-            # 4. Negatively sloped diagonals:
-            for i in negativeDiagonalIndices:
-                if currGrid[i] == AI_PLAYER and currGrid[i + 5] == AI_PLAYER and currGrid[i + 10] == AI_PLAYER \
-                        and currGrid[i + 15] == AI_PLAYER:
-                    score += 1
-                elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 5] == HUMAN_PLAYER \
-                        and currGrid[i + 10] == HUMAN_PLAYER and currGrid[i + 15] == HUMAN_PLAYER:
-                    score -= 1
-            return score
-        return 0
-
     def isTerminal(self):
         """
         returns boolean that indicates if the board is completely filled or not
@@ -426,11 +381,11 @@ class GameState:
                 return False
         return True
 
-    def isWinning(self, player):
+    def isWinning(self):
         if self.isTerminal():
-            score = self.countMatchingFours()
-            print("Final score is " + str(score))
-            if (score > 0 and player == AI_PLAYER) or (score < 0 and player == HUMAN_PLAYER):
+            score = countMatchingFours(self.grid)
+            print("Final score is " + str(score[0]) + "-" + str(score[1]))
+            if score[0] > score[1]:
                 return True
         return False  # other player is winning or draw or not terminal yet
 
@@ -509,6 +464,56 @@ def checkRedundancyNegative(state, Number, i, j, cell, start, limit):
         check_left_one = left_one >= limit and state[left_one] != undesired_cell
         check_right_one = right_one <= start and state[right_one] != undesired_cell
         return check_left_one or check_right_one
+
+
+def countMatchingFours(currGrid):
+    positiveDiagonalIndices = [0, 1, 2, 6, 7, 8, 12, 13, 14, 18, 19, 20]
+    negativeDiagonalIndices = [3, 4, 5, 9, 10, 11, 15, 16, 17, 21, 22, 23]
+    positiveDiagonalFor3 = copy.copy(positiveDiagonalIndices)
+    positiveDiagonalFor3.extend([9, 15, 21, 25, 26, 27])
+    negativeDiagonalFor3 = copy.copy(negativeDiagonalIndices)
+    negativeDiagonalFor3.extend([8, 14, 20, 26, 27, 28])
+    positiveDiagonalFor2 = copy.copy(positiveDiagonalFor3)
+    positiveDiagonalFor2.extend([16, 22, 28, 32, 33, 34])
+    negativeDiagonalFor2 = copy.copy(negativeDiagonalFor3)
+    negativeDiagonalFor2.extend([13, 19, 25, 31, 32, 33])
+    scoreAI, scoreHuman = 0, 0
+    # 1. HORIZONTALLY:
+    for i in range(23):
+        if currGrid[i] == AI_PLAYER and currGrid[i + 6] == AI_PLAYER and currGrid[i + 12] == AI_PLAYER \
+                and currGrid[i + 18] == AI_PLAYER:
+            scoreAI += 1
+        elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 6] == HUMAN_PLAYER \
+                and currGrid[i + 12] == HUMAN_PLAYER and currGrid[i + 18] == HUMAN_PLAYER:
+            scoreHuman += 1
+    # 2. Vertically
+    for j in range(0, 36, 6):
+        for i in range(4):
+            if currGrid[i + j] == AI_PLAYER and currGrid[i + j + 1] == AI_PLAYER and currGrid[
+                i + j + 2] == AI_PLAYER \
+                    and currGrid[i + j + 3] == AI_PLAYER:
+                scoreAI += 1
+            elif currGrid[i + j] == HUMAN_PLAYER and currGrid[i + j + 1] == HUMAN_PLAYER \
+                    and currGrid[i + j + 2] == HUMAN_PLAYER and currGrid[i + j + 3] == HUMAN_PLAYER:
+                scoreHuman += 1
+    # 3. Positively sloped diagonals:
+    # (don't consider the cases where the diagonal length is less than 4 as it is meaningless)
+    for i in positiveDiagonalIndices:
+        if currGrid[i] == AI_PLAYER and currGrid[i + 7] == AI_PLAYER and currGrid[i + 14] == AI_PLAYER \
+                and currGrid[i + 21] == AI_PLAYER:
+            scoreAI += 1
+        elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 7] == HUMAN_PLAYER \
+                and currGrid[i + 14] == HUMAN_PLAYER and currGrid[i + 21] == HUMAN_PLAYER:
+            scoreHuman += 1
+    # 4. Negatively sloped diagonals:
+    for i in negativeDiagonalIndices:
+        if currGrid[i] == AI_PLAYER and currGrid[i + 5] == AI_PLAYER and currGrid[i + 10] == AI_PLAYER \
+                and currGrid[i + 15] == AI_PLAYER:
+            scoreAI += 1
+        elif currGrid[i] == HUMAN_PLAYER and currGrid[i + 5] == HUMAN_PLAYER \
+                and currGrid[i + 10] == HUMAN_PLAYER and currGrid[i + 15] == HUMAN_PLAYER:
+            scoreHuman += 1
+    return scoreAI, scoreHuman
 
 # newGrid = "0" * 42
 # gameState = GameState(newGrid, random.choice(PLAYERS), None)

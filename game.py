@@ -6,6 +6,13 @@ import pygame_gui
 import minimax
 import GameState
 
+"""
+Karim Elsayed ID.6023
+Ahmed Saad ID.6060
+Heba Elwazzan ID.6521
+Youssef Nawar ID.6602
+"""
+
 APPLICATION_TITLE = 'Connect4'
 
 WINDOW_WIDTH = 1100
@@ -15,6 +22,8 @@ GAME_HORIZONTAL_TILE_COUNT = 7
 GAME_VERTICA_TILE_COUNT = 6
 BOARD_START_X = 10
 BOARD_START_Y = 10
+
+WAIT_TIME = 1000
 
 # 7 horizontal tiles means width (700/7) = 100px for each tile
 # thus radius of each is at max 100/2 = 50px
@@ -28,9 +37,11 @@ COLUMN_HEIGHT = MAIN_RADIUS * 2 + CIRCLE_MARGIN
 GAME_AREA_WIDTH = COLUMN_WIDTH * GAME_HORIZONTAL_TILE_COUNT
 GAME_AREA_HEIGHT = COLUMN_HEIGHT * GAME_VERTICA_TILE_COUNT
 
-print(GAME_AREA_WIDTH)
-print(GAME_AREA_HEIGHT)
-print(COLUMN_WIDTH)
+# print(GAME_AREA_WIDTH)
+# print(GAME_AREA_HEIGHT)
+# print(COLUMN_WIDTH)
+
+ALERTLABELEVENT = pygame.USEREVENT + 2
 
 # Colors
 YELLOW = (250, 200, 3)
@@ -172,11 +183,8 @@ def performMove(j, player, board):
         print(buildStateString(board))
         return True
     else:
-        print("can't insert here")
-        print(buildStateString(board))
-        # TODO: ERROR BOX
+        alert_label("Illegal move")
         return False
-
 
 
 
@@ -199,6 +207,11 @@ def gameOver(board):
         if h > -1:
             return False
     return True
+
+
+def alert_label(message):
+    alertLabel.set_text(message)
+    pygame.time.set_timer(ALERTLABELEVENT, WAIT_TIME)
 
 
 # must initialize pygame as program start
@@ -249,6 +262,16 @@ modifyStateButton = pygame_gui.elements.UIButton(
     relative_rect=modifyStateButtonRect, text='Set state', manager=manager
 )
 
+alertLabelRect = getRect(7)
+alertLabel = pygame_gui.elements.UILabel(
+    relative_rect=alertLabelRect, manager=manager, text="Start Game"
+)
+
+scoreLabelRect = getRect(8)
+scoreLabel = pygame_gui.elements.UILabel(
+    relative_rect=scoreLabelRect, manager=manager, text="SCORE"
+)
+
 # the title of the window that appears in title bar
 pygame.display.set_caption(APPLICATION_TITLE)
 
@@ -288,7 +311,7 @@ while running:
                     if len(textFieldStateString) == CELL_COUNT:
                         gameBoard = modifyState(textFieldStateString)
                     else:
-                        # TODO: SHOW ERROR IN A TEXT BOX
+                        alert_label("Error!")
                         pass
                 elif event.ui_element == confirmButton:
                     maximum_depth = int(inputTextField.text)
@@ -298,6 +321,9 @@ while running:
             # if it was AI turn on game end it will attempt to play unless we specifically prohibit it
             if not gameOver(gameBoard):
                 aiPlay(gameBoard, maximum_depth)
+            score = GameState.countMatchingFours(buildStateString(gameBoard))
+            scoreLabel.set_text(f"{score[0]}-{score[1]}")
+            alert_label("Your turn")
             current_player = HUMAN
 
         # Checking for a mouseclick on a tile
@@ -311,9 +337,18 @@ while running:
                     if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
                         result = humanPlay(event.pos[0], event.pos[1], current_player, gameBoard)
                         if result:
+                            humanPlay(event.pos[0], event.pos[1], current_player, gameBoard)
+                            alert_label("Computer's turn")
+                            score = GameState.countMatchingFours(buildStateString(gameBoard))
+                            scoreLabel.set_text(f"{score[0]}-{score[1]}")
                             current_player = AI
             else:
-                print(f'Game Over! press restart when available')
+                state = buildStateString(gameBoard)
+                gameState = GameState.GameState(state, None, None)
+                if gameState.isWinning():
+                    alert_label(f'Computer won!')
+                elif gameState.isWinning():
+                    alert_label("You won!")
 
         manager.process_events(event)
 
