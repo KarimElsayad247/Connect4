@@ -103,18 +103,23 @@ def maximizeAlphaBeta(state: GameState, alpha, beta, k):
         temp = state.eval()
         dictionary[state.grid] = temp
         return None, temp
+
     maxChild, maxUtility = (None, -math.inf)
 
     for action in actions(state):
         _, utility = minimizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1)
+
         if utility > maxUtility:
             maxChild, maxUtility = action, utility
-        # update value of alpha
-        if utility > alpha:
-            alpha = utility
+
         # check if the value of beta is lower than alpha then prune the rest of the tree
-        if beta <= alpha:
+        if maxUtility >= beta:
             break
+
+        # update value of alpha
+        if maxUtility > alpha:
+            alpha = maxUtility
+
     return maxChild, maxUtility
 
 
@@ -132,14 +137,18 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k):
 
     for action in actions(state):
         _, utility = maximizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1)
+
         if utility < minUtility:
             minChild, minUtility = action, utility
-        # update the value of beta
-        if utility < beta:
-            beta = utility
+
         # check if the value of beta is lower than alpha then prune the rest of the tree
-        if beta <= alpha:
+        if minUtility <= alpha:
             break
+
+        # update the value of beta
+        if minUtility < beta:
+            beta = minUtility
+
     return minChild, minUtility
 
 
