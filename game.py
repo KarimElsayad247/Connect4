@@ -1,5 +1,6 @@
 # GUI goes here
 import math
+import time
 import pygame
 import pygame_gui
 import minimax
@@ -147,11 +148,17 @@ def aiPlay(board, k):
 
     print(f"maxDepth = {k}")
 
+    startTime = time.time()
     # calls either Minimax or MinimaxAlphaBeta based on result from dropdown
     if solveChoice == "MiniMax":
         decision = minimax.decisionMinimax(state, k)
     else:
         decision = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
+    endTime = time.time()
+
+    duration = endTime - startTime
+
+    print(f'tool {duration} secs')
 
     performMove(decision, current_player, gameBoard)
 
