@@ -85,8 +85,12 @@ class Board:
 
 INITIAL_STATE = '000000000000000000000000000000000000000000'
 CELL_COUNT = len(INITIAL_STATE)
+INITIAL_MAX_DEPTH = 3
 
 gameBoard = Board()
+
+# maximum depth of search space in minimax
+maximum_depth = INITIAL_MAX_DEPTH
 
 # variable that controls color of each inserted
 current_player = HUMAN
@@ -133,13 +137,16 @@ def buildBoardListFromString(stateString: str):
 
 # returns the appropriate action for the AI to perform
 # An integer between 0:6 representing column in which to insert
-def aiPlay(board):
+def aiPlay(board, k):
     # Converts current board state into appropriate format for minimax
     stateString = buildStateString(board)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
     print("score: " + str(state.eval()))
-    k = 5
+
     minimax.resetDict()
+
+    print(f"maxDepth = {k}")
+
     # calls either Minimax or MinimaxAlphaBeta based on result from dropdown
     if solveChoice == "MiniMax":
         decision = minimax.decisionMinimax(state, k)
@@ -200,20 +207,21 @@ def getRect(order):
     return pygame.Rect((850, (50 * order + 50)), (200, 50))
 
 
-inputTextFieldRect = getRect(0)
+inputTextFieldRect = getRect(1)
 inputTextField = pygame_gui.elements.UITextEntryLine(
     relative_rect=inputTextFieldRect, manager=manager)
 inputTextField.set_allowed_characters(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
-inputTextField.set_text_length_limit(1)
+inputTextField.set_text_length_limit(2)
+inputTextField.set_text(str(INITIAL_MAX_DEPTH))
 
-solveChoiceRect = getRect(1)
+confirmButtonRect = getRect(0)
+confirmButton = pygame_gui.elements.UIButton(
+    relative_rect=confirmButtonRect, text="Change K", manager=manager)
+
+solveChoiceRect = getRect(2)
 solveChoice = pygame_gui.elements.UIDropDownMenu(
     ["MiniMax", "AlphaBeta"], "MiniMax",
     relative_rect=solveChoiceRect, manager=manager)
-
-confirmButtonRect = getRect(2)
-confirmButton = pygame_gui.elements.UIButton(
-    relative_rect=confirmButtonRect, text="Confirm", manager=manager)
 
 restartButtonRect = getRect(3)
 restartButton = pygame_gui.elements.UIButton(
@@ -271,12 +279,14 @@ while running:
                     else:
                         # TODO: SHOW ERROR IN A TEXT BOX
                         pass
+                elif event.ui_element == confirmButton:
+                    maximum_depth = int(inputTextField.text)
 
         # ai will move only on its turn.
         if current_player == AI:
             # if it was AI turn on game end it will attempt to play unless we specifically prohibit it
             if not gameOver(gameBoard):
-                aiPlay(gameBoard)
+                aiPlay(gameBoard, maximum_depth)
             current_player = HUMAN
 
         # Checking for a mouseclick on a tile
