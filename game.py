@@ -107,7 +107,8 @@ def aiPlay():
     stateString = buildStateString(board_state)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
     print("score: " + str(state.eval()))
-    k = 3
+    k = 8
+    minimax.resetDict()
     # calls either Minimax or MinimaxAlphaBeta based on result from dropdown
     if solveChoice == "MiniMax":
         decision = minimax.decisionMinimax(state, k)

@@ -5,6 +5,7 @@ import random
 from time import sleep
 
 NUM_COLUMNS = 7
+dictionary = dict()
 
 
 def actions(state: GameState):
@@ -39,7 +40,11 @@ def maximizeMinimax(state: GameState, k):
     # 1. Check if this is a terminal state, and if so return its evaluation
     #    A terminal state constitutes either the k depth = 0 was reached or the game is over (board is complete)
     if terminal_state(state, k):
-        return None, state.eval()
+        if dictionary.get(state.grid):
+            return None, dictionary.get(state.grid)
+        temp = state.eval()
+        dictionary[state.grid] = temp
+        return None, temp
 
     # 2. If not, set (maxChild, maxUtility) = (null, -inf)
     maxChild, maxUtility = (None, -math.inf)
@@ -60,7 +65,11 @@ def minimizeMinimax(state: GameState, k):
     # Steps
     # 1. Check if terminal, and if so return evaluation
     if terminal_state(state, k):
-        return None, state.eval()
+        if dictionary.get(state.grid):
+            return None, dictionary.get(state.grid)
+        temp = state.eval()
+        dictionary[state.grid] = temp
+        return None, temp
 
     # 2. Else set (minChild, minUtility) = (null, inf)
     minChild, minUtility = (None, math.inf)
@@ -89,7 +98,11 @@ def maximizeAlphaBeta(state: GameState, alpha, beta, k):
     # updates alpha
 
     if terminal_state(state, k):
-        return None, state.eval()
+        if dictionary.get(state.grid):
+            return None, dictionary.get(state.grid)
+        temp = state.eval()
+        dictionary[state.grid] = temp
+        return None, temp
     maxChild, maxUtility = (None, -math.inf)
 
     for action in actions(state):
@@ -110,7 +123,11 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k):
     # and checks if beta <= alpha, breaks if true
     # updates min
     if terminal_state(state, k):
-        return None, state.eval()
+        if dictionary.get(state.grid):
+            return None, dictionary.get(state.grid)
+        temp = state.eval()
+        dictionary[state.grid] = temp
+        return None, temp
     minChild, minUtility = (None, +math.inf)
 
     for action in actions(state):
@@ -131,6 +148,11 @@ def decisionAlphaBeta(state: GameState, alpha, beta, k):
     # returns child returned from maximize
     action, _ = maximizeAlphaBeta(state, alpha, beta, k)
     return action
+
+
+def resetDict():
+    global dictionary
+    dictionary = dict()
 
 
 # temp function to test ai in GUI
