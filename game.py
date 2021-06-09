@@ -306,6 +306,7 @@ while running:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == restartButton:
                     gameBoard = modifyState(INITIAL_STATE)
+                    scoreLabel.set_text("0-0")
                 elif event.ui_element == modifyStateButton:
                     textFieldStateString = modifyStateTextField.text
                     if len(textFieldStateString) == CELL_COUNT:
