@@ -83,6 +83,9 @@ class Board:
         self.column_heights = [GAME_VERTICA_TILE_COUNT - 1 for i in range(GAME_HORIZONTAL_TILE_COUNT)]
 
 
+INITIAL_STATE = '000000000000000000000000000000000000000000'
+CELL_COUNT = len(INITIAL_STATE)
+
 gameBoard = Board()
 
 # variable that controls color of each inserted
@@ -135,7 +138,7 @@ def aiPlay(board):
     stateString = buildStateString(board)
     state = GameState.GameState(stateString, GameState.AI_PLAYER, None)
     print("score: " + str(state.eval()))
-    k = 8
+    k = 5
     minimax.resetDict()
     # calls either Minimax or MinimaxAlphaBeta based on result from dropdown
     if solveChoice == "MiniMax":
@@ -216,6 +219,17 @@ restartButtonRect = getRect(3)
 restartButton = pygame_gui.elements.UIButton(
     relative_rect=restartButtonRect, text="Restart", manager=manager)
 
+modifyStateTextFieldRect = getRect(6)
+modifyStateTextField = pygame_gui.elements.UITextEntryLine(
+    relative_rect=modifyStateTextFieldRect, manager=manager
+)
+inputTextField.set_allowed_characters(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
+
+modifyStateButtonRect = getRect(5)
+modifyStateButton = pygame_gui.elements.UIButton(
+    relative_rect=modifyStateButtonRect, text='Set state', manager=manager
+)
+
 # the title of the window that appears in title bar
 pygame.display.set_caption(APPLICATION_TITLE)
 
@@ -249,11 +263,20 @@ while running:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == restartButton:
-                    gameBoard = modifyState("000000000000000000000000000000000000000000")
+                    gameBoard = modifyState(INITIAL_STATE)
+                elif event.ui_element == modifyStateButton:
+                    textFieldStateString = modifyStateTextField.text
+                    if len(textFieldStateString) == CELL_COUNT:
+                        gameBoard = modifyState(textFieldStateString)
+                    else:
+                        # TODO: SHOW ERROR IN A TEXT BOX
+                        pass
 
         # ai will move only on its turn.
         if current_player == AI:
-            aiPlay(gameBoard)
+            # if it was AI turn on game end it will attempt to play unless we specifically prohibit it
+            if not gameOver(gameBoard):
+                aiPlay(gameBoard)
             current_player = HUMAN
 
         # Checking for a mouseclick on a tile
