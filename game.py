@@ -337,7 +337,6 @@ while running:
                     if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
                         result = humanPlay(event.pos[0], event.pos[1], current_player, gameBoard)
                         if result:
-                            humanPlay(event.pos[0], event.pos[1], current_player, gameBoard)
                             alert_label("Computer's turn")
                             score = GameState.countMatchingFours(buildStateString(gameBoard))
                             scoreLabel.set_text(f"{score[0]}-{score[1]}")
