@@ -141,7 +141,8 @@ def aiPlay(board):
         decision = minimax.decisionMinimax(state, k)
     else:
         decision = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
-    return decision
+        
+    performMove(decision, current_player, gameBoard)
 
 
 # Function that actually inserts a chip into a column
@@ -245,8 +246,7 @@ while running:
 
         # ai will move only on its turn.
         if current_player == AI:
-            action = aiPlay(gameBoard)
-            performMove(action, current_player, gameBoard)
+            aiPlay(gameBoard)
             current_player = HUMAN
 
         # Checking for a mouseclick on a tile
