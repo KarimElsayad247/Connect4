@@ -102,7 +102,7 @@ def humanPlay(x, y, player, board):
     j = int((x - BOARD_START_X / 2) // COLUMN_WIDTH)
     print(f'clicked row {i}')
     print(f'clicked column {j}')
-    performMove(j, player, board)
+    return performMove(j, player, board)
 
 
 # takes the 2d board and converts it into appropriate string format
@@ -150,7 +150,7 @@ def aiPlay(board, k):
 
     startTime = time.time()
     # calls either Minimax or MinimaxAlphaBeta based on result from dropdown
-    if solveChoice == "MiniMax":
+    if solveChoice.selected_option == "MiniMax":
         decision = minimax.decisionMinimax(state, k)
     else:
         decision = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
@@ -160,7 +160,7 @@ def aiPlay(board, k):
 
     print(f'tool {duration} secs')
 
-    performMove(decision, current_player, gameBoard)
+    return performMove(decision, current_player, gameBoard)
 
 
 # Function that actually inserts a chip into a column
@@ -169,11 +169,15 @@ def performMove(j, player, board):
         board.board_state[board.column_heights[j]][j] = player
         board.board_circles[board.column_heights[j]][j].color = PLAYER_COLORS[player]
         board.column_heights[j] -= 1
+        print(buildStateString(board))
+        return True
     else:
         print("can't insert here")
+        print(buildStateString(board))
         # TODO: ERROR BOX
+        return False
 
-    print(buildStateString(board))
+
 
 
 # takes a string representing a board state and changes relevant board variables
@@ -305,8 +309,9 @@ while running:
                     # No need to do any swapping otherwise
                     print(f'clicked {event.pos[0]}, {event.pos[1]}')
                     if x < GAME_AREA_WIDTH and y < GAME_AREA_HEIGHT:
-                        humanPlay(event.pos[0], event.pos[1], current_player, gameBoard)
-                        current_player = AI
+                        result = humanPlay(event.pos[0], event.pos[1], current_player, gameBoard)
+                        if result:
+                            current_player = AI
             else:
                 print(f'Game Over! press restart when available')
 
