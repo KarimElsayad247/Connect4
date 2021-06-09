@@ -142,7 +142,7 @@ def aiPlay(board):
         decision = minimax.decisionMinimax(state, k)
     else:
         decision = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
-        
+
     performMove(decision, current_player, gameBoard)
 
 
@@ -191,22 +191,28 @@ window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 # functions of all the UI elements we create and assign to it.
 manager = pygame_gui.UIManager((WINDOW_WIDTH, WINDOW_HEIGHT))
 
-inputTextFieldRect = pygame.Rect((850, 50), (200, 50))
+
+# for ease of creating rects ordered properly for side panel
+def getRect(order):
+    return pygame.Rect((850, (50 * order + 50)), (200, 50))
+
+
+inputTextFieldRect = getRect(0)
 inputTextField = pygame_gui.elements.UITextEntryLine(
     relative_rect=inputTextFieldRect, manager=manager)
 inputTextField.set_allowed_characters(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
 inputTextField.set_text_length_limit(1)
 
-solveChoiceRect = pygame.Rect((850, 100), (200, 50))
+solveChoiceRect = getRect(1)
 solveChoice = pygame_gui.elements.UIDropDownMenu(
     ["MiniMax", "AlphaBeta"], "MiniMax",
     relative_rect=solveChoiceRect, manager=manager)
 
-confirmButtonRect = pygame.Rect((850, 150), (200, 50))
+confirmButtonRect = getRect(2)
 confirmButton = pygame_gui.elements.UIButton(
     relative_rect=confirmButtonRect, text="Confirm", manager=manager)
 
-restartButtonRect = pygame.Rect((850, 200), (200, 50))
+restartButtonRect = getRect(3)
 restartButton = pygame_gui.elements.UIButton(
     relative_rect=restartButtonRect, text="Restart", manager=manager)
 
