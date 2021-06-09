@@ -89,7 +89,7 @@ def maximizeAlphaBeta(state: GameState, alpha, beta, k):
     # updates alpha
 
     if terminal_state(state, k):
-        return None, state.evalState(GameState.AI_PLAYER)
+        return None, state.eval()
     maxChild, maxUtility = (None, -math.inf)
 
     for action in actions(state):
@@ -110,7 +110,7 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k):
     # and checks if beta <= alpha, breaks if true
     # updates min
     if terminal_state(state, k):
-        return None, state.evalState(GameState.HUMAN_PLAYER)
+        return None, state.eval()
     minChild, minUtility = (None, +math.inf)
 
     for action in actions(state):
