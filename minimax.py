@@ -19,6 +19,17 @@ dictionary = dict()
 ACTION_BY_PRIORITY = [3, 2, 4, 1, 5, 0, 6]
 
 
+class Node:
+
+    def __init__(self):
+        self.val = 0
+        self.children = []
+        self.minMax = False
+
+    def insertChild(self, node):
+        self.children.append(node)
+
+
 def actions(state: GameState):
     """
     Returns set of all possible actions available on the board.
@@ -47,6 +58,9 @@ def terminal_state(state: GameState, k):
 # instead of a child, the function returns an action which is a number in range(0:7)
 # This makes it easier for GUI to make move
 def maximizeMinimax(state: GameState, k):
+
+    
+
     # Steps:
     # 1. Check if this is a terminal state, and if so return its evaluation
     #    A terminal state constitutes either the k depth = 0 was reached or the game is over (board is complete)
@@ -98,7 +112,7 @@ def minimizeMinimax(state: GameState, k):
 
 def decisionMinimax(state: GameState, k):  # returns an integer between 0:7
     # The AI player is the calls maximize(state, k) and set child to it, then return it
-    action, _ = maximizeMinimax(state, k)
+    action, _ , root = maximizeMinimax(state, k)
     return action
 
 
