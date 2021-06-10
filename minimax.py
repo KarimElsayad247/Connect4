@@ -119,7 +119,7 @@ def maximizeMinimax(state: GameState, k, root: Tree):
             return None, dictionary.get(state.grid)
         temp = state.eval()
         dictionary[state.grid] = temp
-        root.name = temp
+        root.name = f'{temp}'
         return None, temp
 
     # 2. If not, set (maxChild, maxUtility) = (null, -inf)
@@ -132,7 +132,7 @@ def maximizeMinimax(state: GameState, k, root: Tree):
         # 4. Then choose maximum out of all children and return it
         if utility > maxUtility:
             maxChild, maxUtility = action, utility
-            root.name = maxUtility
+        root.name = f'{action}, {maxUtility}'
 
     return maxChild, maxUtility
 
@@ -145,7 +145,7 @@ def minimizeMinimax(state: GameState, k, root: Tree):
             return None, dictionary.get(state.grid)
         temp = state.eval()
         dictionary[state.grid] = temp
-        root.name = temp
+        root.name = f'{temp}'
         return None, temp
 
     # 2. Else set (minChild, minUtility) = (null, inf)
@@ -159,7 +159,7 @@ def minimizeMinimax(state: GameState, k, root: Tree):
         # 4. Choose minimum utility out of all children and return it along with the minChild
         if utility < minUtility:
             minChild, minUtility = action, utility
-            root.name = minUtility
+            root.name = f'{action}, {minUtility}'
 
     return minChild, minUtility
 
