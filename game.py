@@ -134,7 +134,12 @@ def humanPlay(x, y, player, board):
     j = int((x - BOARD_START_X / 2) // COLUMN_WIDTH)
     print(f'clicked row {i}')
     print(f'clicked column {j}')
-    return performMove(j, player, board)
+    if board.column_heights[j] >= 0:
+        performMove(j, player, board)
+        return True
+    else:
+        alert_label("Illegal move")
+        return False
 
 
 # takes the 2d board and converts it into appropriate string format
@@ -200,16 +205,10 @@ def aiPlay(board, k):
 
 # Function that actually inserts a chip into a column
 def performMove(j, player, board):
-    if board.column_heights[j] >= 0:
         board.board_state[board.column_heights[j]][j] = player
         board.board_circles[board.column_heights[j]][j].color = PLAYER_COLORS[player]
         board.column_heights[j] -= 1
         print(buildStateString(board))
-        return True
-    else:
-        alert_label("Illegal move")
-        return False
-
 
 
 # takes a string representing a board state and changes relevant board variables
