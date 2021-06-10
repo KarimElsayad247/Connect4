@@ -185,7 +185,7 @@ def aiPlay(board, k):
     if solveChoice.selected_option == "MiniMax":
         decision, root = minimax.decisionMinimax(state, k)
     else:
-        decision = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
+        decision, root = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
     endTime = time.time()
 
     duration = endTime - startTime

@@ -1,4 +1,3 @@
-# TODO: Build tree in A/B
 
 # Algorithms go here
 import GameState
@@ -183,20 +182,23 @@ def maximizeAlphaBeta(state: GameState, alpha, beta, k, root):
 
     if terminal_state(state, k):
         if dictionary.get(state.grid):
-            return None, dictionary.get(state.grid)
-        temp = state.eval()
-        dictionary[state.grid] = temp
-        root.value = temp
+            temp = dictionary.get(state.grid)
+        else:
+            temp = state.eval()
+            dictionary[state.grid] = temp
+        root.name = f'{temp}'
         return None, temp
 
     maxChild, maxUtility = (None, -math.inf)
 
     for action in actions(state):
-        _, utility = minimizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1, root.addChild())
+        child = root.add_child()
+        child.dist = action
+        _, utility = minimizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1, child)
 
         if utility > maxUtility:
             maxChild, maxUtility = action, utility
-            root.value = maxUtility
+            root.name = f'[{action}, {maxUtility}] MAX'
 
         # check if the value of beta is lower than alpha then prune the rest of the tree
         if maxUtility >= beta:
@@ -215,19 +217,22 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k, root):
     # updates min
     if terminal_state(state, k):
         if dictionary.get(state.grid):
-            return None, dictionary.get(state.grid)
-        temp = state.eval()
-        dictionary[state.grid] = temp
-        root.value = temp
+            temp = dictionary.get(state.grid)
+        else:
+            temp = state.eval()
+            dictionary[state.grid] = temp
+        root.name = f'{temp}'
         return None, temp
     minChild, minUtility = (None, +math.inf)
 
     for action in actions(state):
-        _, utility = maximizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1, root.addChild())
+        child = root.add_child()
+        child.dist = action
+        _, utility = maximizeAlphaBeta(state.makeMove(action), alpha, beta, k - 1, child)
 
         if utility < minUtility:
             minChild, minUtility = action, utility
-            root.value = minUtility
+            root.name = f'[{action}, {minUtility}] MIN'
 
         # check if the value of beta is lower than alpha then prune the rest of the tree
         if minUtility <= alpha:
@@ -243,10 +248,9 @@ def minimizeAlphaBeta(state: GameState, alpha, beta, k, root):
 def decisionAlphaBeta(state: GameState, alpha, beta, k):
     # calls maximize(state, -inf, inf, k)
     # returns child returned from maximize
-    root = Node(None)
+    root = Tree()
     action, _ = maximizeAlphaBeta(state, alpha, beta, k, root)
-    printTree(root)
-    return action
+    return action, root
 
 
 def resetDict():
