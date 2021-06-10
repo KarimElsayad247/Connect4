@@ -127,6 +127,7 @@ def maximizeMinimax(state: GameState, k, root: Tree):
     #    and set utility to minimize(child, k-1)
     for action in actions(state):
         child = root.add_child()
+        child.dist = action
         _, utility = minimizeMinimax(state.makeMove(action), k - 1, child)
         # 4. Then choose maximum out of all children and return it
         if utility > maxUtility:
@@ -154,6 +155,7 @@ def minimizeMinimax(state: GameState, k, root: Tree):
     # 3. Then loop over each state's children and set utility to maximize(child, k-1)
     for action in actions(state):
         child = root.add_child()
+        child.dist = action
         _, utility = maximizeMinimax(state.makeMove(action), k - 1, child)
 
         # 4. Choose minimum utility out of all children and return it along with the minChild

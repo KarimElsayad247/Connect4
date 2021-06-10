@@ -1,5 +1,6 @@
 # TODO:
 #   - MAKE ERROR LABEL BIGGER TO FIT LARGER MESSAGES
+#   - GIVE HIGHER PRIORITY TO FIRST MOVE ON COL 3 BOTTOM ROW
 
 # GUI goes here
 import math
@@ -124,6 +125,8 @@ ts.show_leaf_name = False
 ts.layout_fn = rotation_layout
 ts.rotation = 90
 ts.branch_vertical_margin = 20
+ts.force_topology = True
+ts.show_branch_length = True
 
 
 def humanPlay(x, y, player, board):
