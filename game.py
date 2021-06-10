@@ -1,3 +1,6 @@
+# TODO:
+#   - MAKE ERROR LABEL BIGGER TO FIT LARGER MESSAGES
+
 # GUI goes here
 import math
 import time
@@ -336,8 +339,7 @@ while running:
                     if len(textFieldStateString) == CELL_COUNT:
                         gameBoard = modifyState(textFieldStateString)
                     else:
-                        alert_label("Error!")
-                        pass
+                        alert_label(f"Must be exactly {CELL_COUNT} numbers!")
                 elif event.ui_element == confirmButton:
                     maximum_depth = int(inputTextField.text)
 
