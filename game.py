@@ -192,7 +192,7 @@ def aiPlay(board, k):
 
     print(f'tool {duration} secs')
 
-    if showTreeChoice.selected_option == 'Yes':
+    if showTreeChoice.selected_option == 'Show Tree':
         root.show(tree_style=ts)
 
     return performMove(decision, current_player, gameBoard)
@@ -298,7 +298,7 @@ scoreLabel = pygame_gui.elements.UILabel(
 
 showTreeChoiceRect = getRect(10)
 showTreeChoice = pygame_gui.elements.UIDropDownMenu(
-    ['Yes', 'No'], 'No', relative_rect=showTreeChoiceRect, manager=manager
+    ['Show Tree', 'Hide Tree'], 'Hide Tree', relative_rect=showTreeChoiceRect, manager=manager
 )
 
 
