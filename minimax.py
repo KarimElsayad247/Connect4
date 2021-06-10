@@ -116,9 +116,10 @@ def maximizeMinimax(state: GameState, k, root: Tree):
     #    A terminal state constitutes either the k depth = 0 was reached or the game is over (board is complete)
     if terminal_state(state, k):
         if dictionary.get(state.grid):
-            return None, dictionary.get(state.grid)
-        temp = state.eval()
-        dictionary[state.grid] = temp
+            temp = dictionary.get(state.grid)
+        else:
+            temp = state.eval()
+            dictionary[state.grid] = temp
         root.name = f'{temp}'
         return None, temp
 
@@ -142,9 +143,10 @@ def minimizeMinimax(state: GameState, k, root: Tree):
     # 1. Check if terminal, and if so return evaluation
     if terminal_state(state, k):
         if dictionary.get(state.grid):
-            return None, dictionary.get(state.grid)
-        temp = state.eval()
-        dictionary[state.grid] = temp
+            temp = dictionary.get(state.grid)
+        else:
+            temp = state.eval()
+            dictionary[state.grid] = temp
         root.name = f'{temp}'
         return None, temp
 
