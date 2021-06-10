@@ -1,3 +1,5 @@
+# TODO: Build tree in A/B
+
 # Algorithms go here
 import GameState
 import math
@@ -18,11 +20,6 @@ dictionary = dict()
 # 0 | 1 | 2 | 3 | 4 | 5 | 6
 ACTION_BY_PRIORITY = [3, 2, 4, 1, 5, 0, 6]
 
-
-def rotation_layout(node):
-    F = TextFace(node.name, tight_text=True)
-    F.rotation = -90
-    add_face_to_node(F, node, column=0, position="branch-right")
 
 
 class Node:
@@ -172,13 +169,8 @@ def decisionMinimax(state: GameState, k):  # returns an integer between 0:7
     root = Tree()
     action, _ = maximizeMinimax(state, k, root)
     # printTree(root)
-    ts = TreeStyle()
-    ts.show_leaf_name = False
-    ts.layout_fn = rotation_layout
-    ts.rotation = 90
-    ts.branch_vertical_margin = 20
-    root.show(tree_style=ts)
-    return action
+
+    return action, root
 
 
 # Minimax with alpha-beta pruning algorithms

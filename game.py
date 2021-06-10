@@ -5,6 +5,7 @@ import pygame
 import pygame_gui
 import minimax
 import GameState
+from ete3 import Tree, TreeStyle, TextFace, add_face_to_node
 
 """
 Karim Elsayed ID.6023
@@ -108,6 +109,20 @@ maximum_depth = INITIAL_MAX_DEPTH
 current_player = HUMAN
 
 
+# Used for styling tree
+def rotation_layout(node):
+    F = TextFace(node.name, tight_text=True)
+    F.rotation = -90
+    add_face_to_node(F, node, column=0, position="branch-right")
+
+
+ts = TreeStyle()
+ts.show_leaf_name = False
+ts.layout_fn = rotation_layout
+ts.rotation = 90
+ts.branch_vertical_margin = 20
+
+
 def humanPlay(x, y, player, board):
     i = int((y - BOARD_START_Y / 2) // COLUMN_HEIGHT)
     j = int((x - BOARD_START_X / 2) // COLUMN_WIDTH)
@@ -162,7 +177,7 @@ def aiPlay(board, k):
     startTime = time.time()
     # calls either Minimax or MinimaxAlphaBeta based on result from dropdown
     if solveChoice.selected_option == "MiniMax":
-        decision = minimax.decisionMinimax(state, k)
+        decision, root = minimax.decisionMinimax(state, k)
     else:
         decision = minimax.decisionAlphaBeta(state, -math.inf, +math.inf, k)
     endTime = time.time()
@@ -170,6 +185,9 @@ def aiPlay(board, k):
     duration = endTime - startTime
 
     print(f'tool {duration} secs')
+
+    if showTreeChoice.selected_option == 'Yes':
+        root.show(tree_style=ts)
 
     return performMove(decision, current_player, gameBoard)
 
@@ -271,6 +289,12 @@ scoreLabelRect = getRect(8)
 scoreLabel = pygame_gui.elements.UILabel(
     relative_rect=scoreLabelRect, manager=manager, text="SCORE"
 )
+
+showTreeChoiceRect = getRect(10)
+showTreeChoice = pygame_gui.elements.UIDropDownMenu(
+    ['Yes', 'No'], 'No', relative_rect=showTreeChoiceRect, manager=manager
+)
+
 
 # the title of the window that appears in title bar
 pygame.display.set_caption(APPLICATION_TITLE)
