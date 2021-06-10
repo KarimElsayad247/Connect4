@@ -112,6 +112,15 @@ maximum_depth = INITIAL_MAX_DEPTH
 # variable that controls color of each inserted
 current_player = HUMAN
 
+# for undo
+stateHistory = []
+
+
+def undoMove(history: list):
+    lastState = history.pop()
+    board = modifyState(lastState)
+    return board
+
 
 # Used for styling tree
 def rotation_layout(node):
@@ -135,6 +144,7 @@ def humanPlay(x, y, player, board):
     print(f'clicked row {i}')
     print(f'clicked column {j}')
     if board.column_heights[j] >= 0:
+        stateHistory.append(buildStateString(board))
         performMove(j, player, board)
         return True
     else:
@@ -205,10 +215,10 @@ def aiPlay(board, k):
 
 # Function that actually inserts a chip into a column
 def performMove(j, player, board):
-        board.board_state[board.column_heights[j]][j] = player
-        board.board_circles[board.column_heights[j]][j].color = PLAYER_COLORS[player]
-        board.column_heights[j] -= 1
-        print(buildStateString(board))
+    board.board_state[board.column_heights[j]][j] = player
+    board.board_circles[board.column_heights[j]][j].color = PLAYER_COLORS[player]
+    board.column_heights[j] -= 1
+    print(buildStateString(board))
 
 
 # takes a string representing a board state and changes relevant board variables
@@ -300,6 +310,10 @@ showTreeChoice = pygame_gui.elements.UIDropDownMenu(
     ['Show Tree', 'Hide Tree'], 'Hide Tree', relative_rect=showTreeChoiceRect, manager=manager
 )
 
+undoButtonRect = getRect(11)
+undoButton = pygame_gui.elements.UIButton(
+    relative_rect=undoButtonRect, text='Undo', manager=manager
+)
 
 # the title of the window that appears in title bar
 pygame.display.set_caption(APPLICATION_TITLE)
@@ -333,20 +347,33 @@ while running:
         # specific to the UI library. all events related to pygame_gui go here
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+
                 if event.ui_element == restartButton:
                     gameBoard = modifyState(INITIAL_STATE)
                     scoreLabel.set_text("0-0")
+
                 elif event.ui_element == modifyStateButton:
                     textFieldStateString = modifyStateTextField.text
                     if len(textFieldStateString) == CELL_COUNT:
+                        stateHistory.append(buildStateString(gameBoard))
                         gameBoard = modifyState(textFieldStateString)
                         score = GameState.countMatchingFours(buildStateString(gameBoard))
                         scoreLabel.set_text(f"{score[0]}-{score[1]}")
                         alert_label("Your turn")
                     else:
                         alert_label(f"Must be exactly {CELL_COUNT} numbers!")
+
                 elif event.ui_element == confirmButton:
                     maximum_depth = int(inputTextField.text)
+
+                elif event.ui_element == undoButton:
+                    if len(stateHistory) > 0:
+                        gameBoard = undoMove(stateHistory)
+                        score = GameState.countMatchingFours(buildStateString(gameBoard))
+                        scoreLabel.set_text(f"{score[0]}-{score[1]}")
+                        alert_label("Your turn")
+                    else:
+                        alert_label('No more prior moves')
 
         # ai will move only on its turn.
         if current_player == AI:
