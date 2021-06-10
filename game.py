@@ -341,6 +341,9 @@ while running:
                     textFieldStateString = modifyStateTextField.text
                     if len(textFieldStateString) == CELL_COUNT:
                         gameBoard = modifyState(textFieldStateString)
+                        score = GameState.countMatchingFours(buildStateString(gameBoard))
+                        scoreLabel.set_text(f"{score[0]}-{score[1]}")
+                        alert_label("Your turn")
                     else:
                         alert_label(f"Must be exactly {CELL_COUNT} numbers!")
                 elif event.ui_element == confirmButton:
