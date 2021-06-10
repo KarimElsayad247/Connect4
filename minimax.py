@@ -3,6 +3,7 @@ import GameState
 import math
 import random
 from time import sleep
+from ete3 import Tree, TreeStyle, TextFace, add_face_to_node
 
 """
 Karim Elsayed ID.6023
@@ -16,6 +17,12 @@ dictionary = dict()
 
 # 0 | 1 | 2 | 3 | 4 | 5 | 6
 ACTION_BY_PRIORITY = [3, 2, 4, 1, 5, 0, 6]
+
+
+def rotation_layout(node):
+    F = TextFace(node.name, tight_text=True)
+    F.rotation = -90
+    add_face_to_node(F, node, column=0, position="branch-right")
 
 
 class Node:
@@ -103,7 +110,7 @@ def terminal_state(state: GameState, k):
 # AI player will call this function
 # instead of a child, the function returns an action which is a number in range(0:7)
 # This makes it easier for GUI to make move
-def maximizeMinimax(state: GameState, k, root):
+def maximizeMinimax(state: GameState, k, root: Tree):
     # Steps:
     # 1. Check if this is a terminal state, and if so return its evaluation
     #    A terminal state constitutes either the k depth = 0 was reached or the game is over (board is complete)
@@ -112,7 +119,7 @@ def maximizeMinimax(state: GameState, k, root):
             return None, dictionary.get(state.grid)
         temp = state.eval()
         dictionary[state.grid] = temp
-        root.value = temp
+        root.name = temp
         return None, temp
 
     # 2. If not, set (maxChild, maxUtility) = (null, -inf)
@@ -121,16 +128,16 @@ def maximizeMinimax(state: GameState, k, root):
     # 3. Then loop over all the state children, which are derived from all possible moves
     #    and set utility to minimize(child, k-1)
     for action in actions(state):
-        _, utility = minimizeMinimax(state.makeMove(action), k - 1, root.addChild())
+        _, utility = minimizeMinimax(state.makeMove(action), k - 1, root.add_child())
         # 4. Then choose maximum out of all children and return it
         if utility > maxUtility:
             maxChild, maxUtility = action, utility
-            root.value = maxUtility
+            root.name = maxUtility
 
     return maxChild, maxUtility
 
 
-def minimizeMinimax(state: GameState, k, root):
+def minimizeMinimax(state: GameState, k, root: Tree):
     # Steps
     # 1. Check if terminal, and if so return evaluation
     if terminal_state(state, k):
@@ -138,7 +145,7 @@ def minimizeMinimax(state: GameState, k, root):
             return None, dictionary.get(state.grid)
         temp = state.eval()
         dictionary[state.grid] = temp
-        root.value = temp
+        root.name = temp
         return None, temp
 
     # 2. Else set (minChild, minUtility) = (null, inf)
@@ -147,21 +154,27 @@ def minimizeMinimax(state: GameState, k, root):
     # 3. Then loop over each state's children and set utility to maximize(child, k-1)
     for action in actions(state):
 
-        _, utility = maximizeMinimax(state.makeMove(action), k - 1, root.addChild())
+        _, utility = maximizeMinimax(state.makeMove(action), k - 1, root.add_child())
 
         # 4. Choose minimum utility out of all children and return it along with the minChild
         if utility < minUtility:
             minChild, minUtility = action, utility
-            root.value = minUtility
+            root.name = minUtility
 
     return minChild, minUtility
 
 
 def decisionMinimax(state: GameState, k):  # returns an integer between 0:7
     # The AI player is the calls maximize(state, k) and set child to it, then return it
-    root = Node(None)
+    root = Tree()
     action, _ = maximizeMinimax(state, k, root)
-    printTree(root)
+    # printTree(root)
+    ts = TreeStyle()
+    ts.show_leaf_name = False
+    ts.layout_fn = rotation_layout
+    ts.rotation = 90
+    ts.branch_vertical_margin = 20
+    root.show(tree_style=ts)
     return action
 
 
