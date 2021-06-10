@@ -132,7 +132,7 @@ def maximizeMinimax(state: GameState, k, root: Tree):
         # 4. Then choose maximum out of all children and return it
         if utility > maxUtility:
             maxChild, maxUtility = action, utility
-            root.name = f'{action}, {maxUtility}'
+            root.name = f'[{action}, {maxUtility}] MAX'
 
     return maxChild, maxUtility
 
@@ -161,7 +161,7 @@ def minimizeMinimax(state: GameState, k, root: Tree):
         # 4. Choose minimum utility out of all children and return it along with the minChild
         if utility < minUtility:
             minChild, minUtility = action, utility
-            root.name = f'{action}, {minUtility}'
+            root.name = f'[{action}, {minUtility}] MIN'
 
     return minChild, minUtility
 
