@@ -204,7 +204,7 @@ class GameState:
                     number_of_connected += 1
                 else:
                     if number_of_connected >= 4:
-                        factor = PLAYER_ONE if current_grid[j - 1] == '1' else PLAYER_TWO
+                        factor = PLAYER_ONE if current_cell == '1' else PLAYER_TWO
                         score += (number_of_connected - 3) * FOUR_CONNECTED[factor]
                     number_of_connected = 1
                     current_cell = current_grid[j]
@@ -267,7 +267,7 @@ class GameState:
                 if current_grid[j] == current_cell and current_grid[j] != '0':
                     number_of_connected += 1
                 else:
-                    factor = PLAYER_ONE if current_grid[j - 7] == '1' else PLAYER_TWO
+                    factor = PLAYER_ONE if current_cell == '1' else PLAYER_TWO
                     if 1 < number_of_connected < 4:
                         if checkRedundancyPositive(current_grid, number_of_connected,
                                                    i, j, current_grid[j - 7], start, limit):
@@ -306,7 +306,7 @@ class GameState:
                     number_of_connected += 1
                 else:
                     if 1 < number_of_connected < 4:
-                        factor = PLAYER_ONE if current_grid[j + 5] == '1' else PLAYER_TWO
+                        factor = PLAYER_ONE if current_cell == '1' else PLAYER_TWO
                         if checkRedundancyNegative(current_grid, number_of_connected,
                                                    i, j, current_grid[j + 5], start, limit):
                             if number_of_connected == 3:
