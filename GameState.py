@@ -515,6 +515,116 @@ def countMatchingFours(currGrid):
             scoreHuman += 1
     return scoreAI, scoreHuman
 
+
+def countMatchingFour(current_grid):
+    AIscore = 0
+    PlayerScore = 0
+    # Count matching four vertical
+    for i in range(0, 7):
+        number_of_connected = 0
+        cell_index = i * 6
+        current_cell = current_grid[cell_index]
+        j = cell_index
+        while j <= (i * 6) + 5 and current_grid[j] != '0':
+            if current_grid[j] == current_cell:
+                number_of_connected += 1
+            else:
+                if number_of_connected >= 4:
+                    if current_grid[j - 1] == '1':
+                        PlayerScore += number_of_connected - 3
+                    else:
+                        AIscore += number_of_connected - 3
+                number_of_connected = 1
+                current_cell = current_grid[j]
+            j += 1
+        if number_of_connected >= 4:
+            if current_grid[j - 1] == '1':
+                PlayerScore += number_of_connected - 3
+            else:
+                AIscore += number_of_connected - 3
+
+    # Count matching four horizontal
+    for i in range(0, 6):
+        number_of_connected = 0
+        cell_index = i
+        current_cell = current_grid[cell_index]
+        j = i
+        while j <= i + 41:
+            if current_grid[j] == current_cell and current_grid[j] != '0':
+                number_of_connected += 1
+            else:
+                if number_of_connected >= 4:
+                    if current_grid[j - 1] == '1':
+                        PlayerScore += number_of_connected - 3
+                    else:
+                        AIscore += number_of_connected - 3
+                number_of_connected = 1
+                current_cell = current_grid[j]
+            j += 6
+        if number_of_connected >= 4:
+            if current_cell == '1':
+                PlayerScore += number_of_connected - 3
+            else:
+                AIscore += number_of_connected - 3
+
+    # Count matching fours positive diagonals
+    positiveDiagonalIndicesStarts = [0, 1, 2, 6, 12, 18]
+    positiveDiagonalIndicesEnd = [35, 29, 23, 41, 40, 39]
+    for i in range(0, 6):
+        number_of_connected = 0
+        start = positiveDiagonalIndicesStarts[i]
+        limit = positiveDiagonalIndicesEnd[i]
+        cell_index = start
+        current_cell = current_grid[cell_index]
+        j = start
+        while j <= limit:
+            if current_grid[j] == current_cell and current_grid[j] != '0':
+                number_of_connected += 1
+            else:
+                if number_of_connected >= 4:
+                    if current_cell == '1':
+                        PlayerScore += number_of_connected - 3
+                    else:
+                        AIscore += number_of_connected - 3
+                number_of_connected = 1
+                current_cell = current_grid[j]
+            j += 7
+        if number_of_connected >= 4:
+            if current_cell == '1':
+                PlayerScore += number_of_connected - 3
+            else:
+                AIscore += number_of_connected - 3
+
+    # Count matching fours Negative Diagonals
+    negativeDiagonalIndicesStarts = [36, 37, 38, 30, 24, 18]
+    negativeDiagonalIndicesEnd = [11, 17, 23, 5, 4, 3]
+    for i in range(0, 6):
+        number_of_connected = 0
+        start = negativeDiagonalIndicesStarts[i]
+        limit = negativeDiagonalIndicesEnd[i]
+        cell_index = start
+        current_cell = current_grid[cell_index]
+        j = start
+        while j >= limit:
+            if current_grid[j] == current_cell and current_grid[j] != '0':
+                number_of_connected += 1
+            else:
+                if number_of_connected >= 4:
+                    if current_cell == '1':
+                        PlayerScore += number_of_connected - 3
+                    else:
+                        AIscore += number_of_connected - 3
+                number_of_connected = 1
+                current_cell = current_grid[j]
+            j -= 5
+        if number_of_connected >= 4:
+            if current_cell == '1':
+                PlayerScore += number_of_connected - 3
+            else:
+                AIscore += number_of_connected - 3
+
+    return AIscore,PlayerScore
+
 # newGrid = "0" * 42
 # gameState = GameState(newGrid, random.choice(PLAYERS), None)
 # printGrid(gameState.grid)

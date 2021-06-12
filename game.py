@@ -357,7 +357,7 @@ while running:
                     if len(textFieldStateString) == CELL_COUNT:
                         stateHistory.append(buildStateString(gameBoard))
                         gameBoard = modifyState(textFieldStateString)
-                        score = GameState.countMatchingFours(buildStateString(gameBoard))
+                        score = GameState.countMatchingFour(buildStateString(gameBoard))
                         scoreLabel.set_text(f"{score[0]}-{score[1]}")
                         alert_label("Your turn")
                     else:
@@ -369,7 +369,7 @@ while running:
                 elif event.ui_element == undoButton:
                     if len(stateHistory) > 0:
                         gameBoard = undoMove(stateHistory)
-                        score = GameState.countMatchingFours(buildStateString(gameBoard))
+                        score = GameState.countMatchingFour(buildStateString(gameBoard))
                         scoreLabel.set_text(f"{score[0]}-{score[1]}")
                         alert_label("Your turn")
                     else:
@@ -380,7 +380,7 @@ while running:
             # if it was AI turn on game end it will attempt to play unless we specifically prohibit it
             if not gameOver(gameBoard):
                 aiPlay(gameBoard, maximum_depth)
-            score = GameState.countMatchingFours(buildStateString(gameBoard))
+            score = GameState.countMatchingFour(buildStateString(gameBoard))
             scoreLabel.set_text(f"{score[0]}-{score[1]}")
             alert_label("Your turn")
             current_player = HUMAN
@@ -397,7 +397,7 @@ while running:
                         result = humanPlay(event.pos[0], event.pos[1], current_player, gameBoard)
                         if result:
                             alert_label("Computer's turn")
-                            score = GameState.countMatchingFours(buildStateString(gameBoard))
+                            score = GameState.countMatchingFour(buildStateString(gameBoard))
                             scoreLabel.set_text(f"{score[0]}-{score[1]}")
                             current_player = AI
             else:
