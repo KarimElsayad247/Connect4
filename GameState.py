@@ -383,7 +383,7 @@ class GameState:
 
     def isWinning(self):
         if self.isTerminal():
-            score = countMatchingFours(self.grid)
+            score = countMatchingFour(self.grid)
             print("Final score is " + str(score[0]) + "-" + str(score[1]))
             if score[0] > score[1]:
                 return True
@@ -530,7 +530,7 @@ def countMatchingFour(current_grid):
                 number_of_connected += 1
             else:
                 if number_of_connected >= 4:
-                    if current_grid[j - 1] == '1':
+                    if current_cell == '1':
                         PlayerScore += number_of_connected - 3
                     else:
                         AIscore += number_of_connected - 3
@@ -538,7 +538,7 @@ def countMatchingFour(current_grid):
                 current_cell = current_grid[j]
             j += 1
         if number_of_connected >= 4:
-            if current_grid[j - 1] == '1':
+            if current_cell == '1':
                 PlayerScore += number_of_connected - 3
             else:
                 AIscore += number_of_connected - 3
@@ -554,7 +554,7 @@ def countMatchingFour(current_grid):
                 number_of_connected += 1
             else:
                 if number_of_connected >= 4:
-                    if current_grid[j - 1] == '1':
+                    if current_cell == '1':
                         PlayerScore += number_of_connected - 3
                     else:
                         AIscore += number_of_connected - 3
